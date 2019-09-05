@@ -1,0 +1,17 @@
+name_"NPC Test"
+dialog_"Do you like coffee?"
+options_coffee
+    text_"Yes"
+    text_"No"
+endoptions
+switch_coffee
+    case_0
+        dialog_"Oh, me too"
+    endcase
+    case_1
+        dialog_"Mmh... You are a liar... Everyone likes coffee!"
+        wait_1
+        dialog_"Take this cup of coffee. You will like it"
+        addItem_"Cup of coffee"
+    endcase
+endswitch
