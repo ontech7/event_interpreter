@@ -3,19 +3,19 @@ Validator for the Event Interpreter
 
 ## Event language syntax
 
-- name_<spacedString>
+- name_$spacedString$
   
 `name_"NPC Name"` 
 
 Gives a name to the NPC (must be the first statement)
 
-- dialog_<spacedString>
+- dialog_$spacedString$
   
 `dialog_"NPC Name"` 
 
 Sets a dialog to the NPC (based on the order of the 'dialog' statements)
 
-- options_<string>
+- options_$string$
   
 `options_coffee
     text_"Yes"
@@ -25,7 +25,7 @@ endoptions`
 Creates options for branch features. The 2nd argument is the variable used by a 'switch' statement.
 Inside 'options' statement, there must be only 'text' statements, like in the example.
 
-- switch_<string>
+- switch_$string$
   
 `switch_coffee
     case_0
@@ -42,13 +42,13 @@ endswitch`
 Creates a complex switch branched features, using 'case' statements based on the order of the option (e.g.: "Yes" is case_0).
 You can write other new options, switches, etc. inside a 'case', without limits (well, based on hardware limits).
 
-- wait_<integer_number>
+- wait_$integer_number$
 
 `wait_1`
 
 Wait a certain amount of time (seconds) before doing the very next action. 
 
-- addItem_<spacedString>
+- addItem_$spacedString$
   
 `addItem_"Cup of coffee"`
 
