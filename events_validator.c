@@ -16,12 +16,21 @@ const char* CASE_TYPE = "case";
 const char* IF_TYPE = "if";
 const char* ADDITEM_TYPE = "addItem";
 const char* WAIT_TYPE = "wait";
+const char* DECLARE_TYPE = "declare";
+const char* FUNCTION_TYPE = "function";
+const char* VARIABLE_TYPE = "variable";
 const char* EMPTY_TYPE = "";
+
+// Special character check
+const char* IS_STRING = "\"";
+const char* IS_COMMENT = "#";
 
 // Closure types
 const char* ENDOPTIONS_TYPE = "endoptions";
 const char* ENDCASE_TYPE = "endcase";
 const char* ENDSWITCH_TYPE = "endswitch";
+const char* ENDDECLARE_TYPE = "enddeclare";
+const char* ENDFUNCTION_TYPE = "endfunction";
 
 // Logger Levels
 const char* ERROR_LEVEL = "error";
@@ -248,6 +257,8 @@ void event_interpreter(const char* event_type, ssize_t next_statement) {
             } else {
                 logger(event_type, statement.commands[0], TYPE_LEVEL, "");
             }
+        } else if (statement.commands[0][0] == '#') { //COMMENT
+            event_interpreter(event_type, get_next_statement());
         } else { // UNKNOWN_COMMAND
             logger(event_type, statement.commands[0], ERROR_LEVEL, UNKNOWN_COMMAND);
             stopPropagation = TRUE;
