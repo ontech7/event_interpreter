@@ -98,13 +98,15 @@ Statement splitv2(char* s, char* delim) {
     int i, j, stringLen = strlen(s);
 
     statement.size = 0;
-    if(stringLen > 0)
+    if(stringLen > 0) {
         statement.commands = (char**)calloc(++statement.size, sizeof(char*));
+        statement.commands[0] = (char*)calloc(64, sizeof(char*));
+    }
 
     for(i = 0, j = 0; i < stringLen; i++, j++) {
-        statement.commands[statement.size-1] = realloc(statement.commands[statement.size-1], sizeof(char) * (j+1));
         if(s[i] == real_delim) {
             statement.commands = realloc(statement.commands, sizeof(char*) * ++statement.size);
+            statement.commands[statement.size-1] = (char*)calloc(64, sizeof(char*));
             j = -1;
             continue;
         }
@@ -233,8 +235,10 @@ void event_interpreter(const char* event_type, ssize_t next_statement) {
             }
         } else if (!strcmp(statement.commands[0], TEXT_TYPE)) { // TEXT_TYPE
             logger(event_type, statement.commands[0], ERROR_LEVEL, NOT_INSIDE_OPTIONS);
+            stopPropagation = TRUE;
         } else if (!strcmp(statement.commands[0], CASE_TYPE)) { // CASE_TYPE
             logger(event_type, statement.commands[0], ERROR_LEVEL, NOT_INSIDE_SWITCH);
+            stopPropagation = TRUE;
         } else if (!strcmp(statement.commands[0], IF_TYPE)) { // IF_TYPE
             logger(event_type, statement.commands[0], TYPE_LEVEL, "");
         } else if (!strcmp(statement.commands[0], ADDITEM_TYPE)) { // ADDITEM_TYPE

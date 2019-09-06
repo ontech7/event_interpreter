@@ -7,7 +7,6 @@ endoptions
 switch_coffee
     case_0
         dialog_"Oh, me too"
-    endcase
     case_1
         dialog_"Mmh... You are a liar... Everyone likes coffee!"
         wait_1
