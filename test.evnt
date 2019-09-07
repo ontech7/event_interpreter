@@ -1,12 +1,24 @@
+declare
+    function_test
+        dialog_"Function test"
+        dialog_"funcfunc"
+    endfunction
+    function_prova
+        dialog_"Prova"
+    endfunction
+enddeclare
 name_"NPC Test"
 dialog_"Do you like coffee?"
 options_coffee
     text_"Yes"
     text_"No"
 endoptions
+call_prova
+call_test
 switch_coffee
     case_0
         dialog_"Oh, me too"
+    endcase
     case_1
         dialog_"Mmh... You are a liar... Everyone likes coffee!"
         wait_1

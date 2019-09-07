@@ -19,11 +19,12 @@ const char* WAIT_TYPE = "wait";
 const char* DECLARE_TYPE = "declare";
 const char* FUNCTION_TYPE = "function";
 const char* VARIABLE_TYPE = "variable";
+const char* CALL_TYPE = "call";
 const char* EMPTY_TYPE = "";
 
 // Special character check
-const char* IS_STRING = "\"";
-const char* IS_COMMENT = "#";
+const char IS_STRING = '"';
+const char IS_COMMENT = '#';
 
 // Closure types
 const char* ENDOPTIONS_TYPE = "endoptions";
@@ -45,6 +46,31 @@ const char* NOT_INSIDE_OPTIONS = "'text' statement not inside 'options'. Error o
 const char* OPTIONS_NOT_FOUND = "'options' used in 'switch' not found: ";
 const char* UNKNOWN_COMMAND = "Unknown command. Check your code.";
 const char* TEXTFIELD_EMPTY = "'Textfield is empty. Check your code.";
+const char* NO_NESTED_FUNCTIONS = "Nested function detected. Error occurred.";
+const char* FUNC_NOT_FOUND = "Function not found: ";
+
+// Structures
+typedef struct{
+    char** commands;
+    int size;
+} Statement;
+
+typedef struct{
+    char* name;
+    int lineCount;
+} Function;
+
+typedef struct{
+    char* name;
+    char* value;
+} Variable;
+
+// Storage
+Function funcs[100];
+Variable vars[100];
+
+int funcsCount = 0;
+int varsCount = 0;
 
 // Useful variables
 int stopPropagation = FALSE;
@@ -53,20 +79,19 @@ char* line = NULL;
 size_t strLength = 0;
 ssize_t _nxt;
 int lineCount = 0;
+int callLine = 0;
 
 const int DEBUG_MODE = TRUE;
 
-typedef struct{
-    char** commands;
-    int size;
-} Statement;
-
-Statement split(char*, char*);
-char* cpystring(char*, int, size_t);
-char* lstrip(char*, char, size_t);
+Statement splitv2(char*, char*);
+char* cpystring(char*, int, int, size_t);
+char* strip(char*, char, size_t);
 void logger(const char*, char*, const char*, const char*);
 ssize_t get_next_statement();
 void event_interpreter(const char*, ssize_t);
+void declare_statement(const char*, ssize_t);
+void function_skip_statement(const char*, ssize_t);
+void call_statement(const char*, ssize_t);
 void options_statement(const char*, ssize_t, char*);
 void switch_statement(const char*, ssize_t, char*);
 void case_statement(const char*, ssize_t, char*);
@@ -104,6 +129,8 @@ Statement splitv2(char* s, char* delim) {
     }
 
     for(i = 0, j = 0; i < stringLen; i++, j++) {
+        if(s[i] == IS_COMMENT)
+            break;
         if(s[i] == real_delim) {
             statement.commands = realloc(statement.commands, sizeof(char*) * ++statement.size);
             statement.commands[statement.size-1] = (char*)calloc(64, sizeof(char*));
@@ -116,28 +143,11 @@ Statement splitv2(char* s, char* delim) {
     return statement;
 }
 
-Statement split(char* s, char* delim) {
-    char *p = strtok(s, delim);
-    Statement statement;
-
-    statement.size = 0;
-    statement.commands = NULL;
-    
-    while (p != NULL)
-    {
-        statement.commands = realloc(statement.commands, sizeof(char*) * ++statement.size);
-        statement.commands[statement.size-1] = p;
-        p = strtok (NULL, delim);
-    }
-
-    return statement;
-}
-
-char* cpystring(char* s, int index, size_t stringLen) {
+char* cpystring(char* s, int left_index, int right_index, size_t stringLen) {
     int i = 0, j = 0;
-    char* tmp = (char*)calloc(stringLen,sizeof(char));
+    char* tmp = (char*)calloc(right_index+1 - left_index,sizeof(char));
 
-    for(i = index; i < stringLen; i++) {
+    for(i = left_index; i < right_index+1; i++) {
         tmp[j] = s[i];
         j++;
     }
@@ -145,18 +155,26 @@ char* cpystring(char* s, int index, size_t stringLen) {
     return tmp;
 }
 
-char* lstrip(char* s, char delimiter, size_t stringLen) {
+char* strip(char* s, char delimiter, size_t stringLen) {
     int i = 0;
     char* tmpStr = (char*)calloc(stringLen,sizeof(char));
+    int left_index = 0, right_index = 0;
 
     for(i = 0; i < stringLen; i++) {
         if(s[i] != ' ') {
-            tmpStr = cpystring(s, i, stringLen);
-            return tmpStr;
+            left_index = i;
+            break;
         }
     }
 
-    return s;
+    for(i = stringLen-1; i >= 0; i--) {
+        if(s[i] != ' ') {
+            right_index = i;
+            break;
+        }
+    }
+
+    return cpystring(s, left_index, right_index, stringLen);
 }
 
 ssize_t get_next_statement() {
@@ -184,18 +202,24 @@ void event_interpreter(const char* event_type, ssize_t next_statement) {
     if(!stopPropagation) {
         Statement statement;
         size_t statementLength = strlen(line);
-
-        line = lstrip(line, ' ', statementLength);
+        int i;
 
         statement = splitv2(line, "_");
 
+        for(i = 0; i < statement.size; i++) {
+            statement.commands[i] = strip(statement.commands[i], ' ', strlen(statement.commands[i]));
+        }
+
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) {
             event_interpreter(event_type, get_next_statement());
+        } else if (!strcmp(statement.commands[0], DECLARE_TYPE)) { // DECLARE_TYPE
+            logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+            declare_statement(DECLARE_TYPE, get_next_statement());
         } else if (!strcmp(statement.commands[0], NAME_TYPE)) { // NAME_TYPE
             if(statement.size < 2) {
                 logger(event_type, statement.commands[0], ERROR_LEVEL, COMMANDS_LENGTH);
                 stopPropagation = TRUE;
-            } else if (statement.commands[1] == NULL){
+            } else if (statement.commands[1] == NULL || !strcmp(statement.commands[1], "")){
                 logger(event_type, statement.commands[0], ERROR_LEVEL, TEXTFIELD_EMPTY);
                 stopPropagation = TRUE;
             } else {
@@ -205,17 +229,28 @@ void event_interpreter(const char* event_type, ssize_t next_statement) {
             if(statement.size < 2) {
                 logger(event_type, statement.commands[0], ERROR_LEVEL, COMMANDS_LENGTH);
                 stopPropagation = TRUE;
-            } else if (statement.commands[1] == NULL){
+            } else if (statement.commands[1] == NULL || !strcmp(statement.commands[1], "")){
                 logger(event_type, statement.commands[0], ERROR_LEVEL, TEXTFIELD_EMPTY);
                 stopPropagation = TRUE;
             } else {
                 logger(event_type, statement.commands[0], TYPE_LEVEL, "");
             }
+        } else if (!strcmp(statement.commands[0], CALL_TYPE)) { // CALL_TYPE
+            if(statement.size < 2) {
+                logger(event_type, statement.commands[0], ERROR_LEVEL, COMMANDS_LENGTH);
+                stopPropagation = TRUE;
+            } else if (statement.commands[1] == NULL || !strcmp(statement.commands[1], "")){
+                logger(event_type, statement.commands[0], ERROR_LEVEL, TEXTFIELD_EMPTY);
+                stopPropagation = TRUE;
+            } else {
+                logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+                call_statement(CALL_TYPE, next_statement);
+            }
         } else if (!strcmp(statement.commands[0], OPTIONS_TYPE)) { // OPTIONS_TYPE
             if(statement.size < 2) {
                 logger(event_type, statement.commands[0], ERROR_LEVEL, COMMANDS_LENGTH);
                 stopPropagation = TRUE;
-            } else if (statement.commands[1] == NULL){
+            } else if (statement.commands[1] == NULL || !strcmp(statement.commands[1], "")){
                 logger(event_type, statement.commands[0], ERROR_LEVEL, TEXTFIELD_EMPTY);
                 stopPropagation = TRUE;
             } else {
@@ -226,7 +261,7 @@ void event_interpreter(const char* event_type, ssize_t next_statement) {
             if(statement.size < 2) {
                 logger(event_type, statement.commands[0], ERROR_LEVEL, COMMANDS_LENGTH);
                 stopPropagation = TRUE;
-            } else if (statement.commands[1] == NULL){
+            } else if (statement.commands[1] == NULL || !strcmp(statement.commands[1], "")){
                 logger(event_type, statement.commands[0], ERROR_LEVEL, TEXTFIELD_EMPTY);
                 stopPropagation = TRUE;
             } else {
@@ -245,7 +280,7 @@ void event_interpreter(const char* event_type, ssize_t next_statement) {
             if(statement.size < 2) {
                 logger(event_type, statement.commands[0], ERROR_LEVEL, COMMANDS_LENGTH);
                 stopPropagation = TRUE;
-            } else if (statement.commands[1] == NULL){
+            } else if (statement.commands[1] == NULL || !strcmp(statement.commands[1], "")){
                 logger(event_type, statement.commands[0], ERROR_LEVEL, TEXTFIELD_EMPTY);
                 stopPropagation = TRUE;
             } else {
@@ -255,17 +290,136 @@ void event_interpreter(const char* event_type, ssize_t next_statement) {
             if(statement.size < 2) {
                 logger(event_type, statement.commands[0], ERROR_LEVEL, COMMANDS_LENGTH);
                 stopPropagation = TRUE;
-            } else if (statement.commands[1] == NULL){
+            } else if (statement.commands[1] == NULL || !strcmp(statement.commands[1], "")){
                 logger(event_type, statement.commands[0], ERROR_LEVEL, TEXTFIELD_EMPTY);
                 stopPropagation = TRUE;
             } else {
                 logger(event_type, statement.commands[0], TYPE_LEVEL, "");
             }
-        } else if (statement.commands[0][0] == '#') { //COMMENT
-            event_interpreter(event_type, get_next_statement());
         } else { // UNKNOWN_COMMAND
             logger(event_type, statement.commands[0], ERROR_LEVEL, UNKNOWN_COMMAND);
             stopPropagation = TRUE;
+        }
+    }
+}
+
+void declare_statement(const char* event_type, ssize_t next_statement) {
+    if(!stopPropagation) {
+        Statement statement;
+        size_t statementLength = strlen(line);
+        int i;
+
+        statement = splitv2(line, "_");
+
+        for(i = 0; i < statement.size; i++) {
+            statement.commands[i] = strip(statement.commands[i], ' ', strlen(statement.commands[i]));
+        }
+
+        if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
+            declare_statement(event_type, get_next_statement());
+        } else if (!strcmp(statement.commands[0], FUNCTION_TYPE)) { //FUNCTION_TYPE
+            if(statement.size < 2) {
+                logger(event_type, statement.commands[0], ERROR_LEVEL, COMMANDS_LENGTH);
+                stopPropagation = TRUE;
+            } else if (statement.commands[1] == NULL || !strcmp(statement.commands[1], "")){
+                logger(event_type, statement.commands[0], ERROR_LEVEL, TEXTFIELD_EMPTY);
+                stopPropagation = TRUE;
+            } else {
+                logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+                funcs[funcsCount].name = statement.commands[1];
+                funcs[funcsCount].lineCount = lineCount;
+                funcsCount++;
+                function_skip_statement(FUNCTION_TYPE, get_next_statement());
+                declare_statement(event_type, get_next_statement());
+            }
+        } else if (!strcmp(statement.commands[0], VARIABLE_TYPE)) { //VARIABLE_TYPE
+            if(statement.size < 2) {
+                logger(event_type, statement.commands[0], ERROR_LEVEL, COMMANDS_LENGTH);
+                stopPropagation = TRUE;
+            } else if (statement.commands[1] == NULL || !strcmp(statement.commands[1], "")){
+                logger(event_type, statement.commands[0], ERROR_LEVEL, TEXTFIELD_EMPTY);
+                stopPropagation = TRUE;
+            } else {
+                logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+                //variable_statement(VARIABLE_TYPE, get_next_statement(), name, value);
+            }
+        } else if (!strcmp(statement.commands[0], ENDDECLARE_TYPE)) { //ENDDECLARE_TYPE
+            logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+        } else { //UNKNOWN_COMMAND
+            logger(event_type, statement.commands[0], ERROR_LEVEL, UNKNOWN_COMMAND);
+            stopPropagation = TRUE;
+        }
+    }
+}
+
+void function_skip_statement(const char* event_type, ssize_t next_statement) {
+    if(!stopPropagation) {
+        Statement statement;
+        size_t statementLength = strlen(line);
+        int i;
+
+        statement = splitv2(line, "_");
+
+        for(i = 0; i < statement.size; i++) {
+            statement.commands[i] = strip(statement.commands[i], ' ', strlen(statement.commands[i]));
+        }
+        
+        if (!strcmp(statement.commands[0], ENDFUNCTION_TYPE)) { //ENDFUNCTION_TYPE
+            logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+        } else if (!strcmp(statement.commands[0], FUNCTION_TYPE)) {
+            logger(event_type, statement.commands[0], ERROR_LEVEL, NO_NESTED_FUNCTIONS);
+            stopPropagation = TRUE;
+        } else { //Skip statement
+            function_skip_statement(event_type, get_next_statement());
+        }
+    }
+}
+
+void variable_statement(const char* event_type, ssize_t next_statement, char* name, char* value) {
+
+}
+
+void call_statement(const char* event_type, ssize_t next_statement) {
+    if(!stopPropagation) {
+        Statement statement;
+        size_t statementLength = strlen(line);
+        int i, funcIndex = -1;
+
+        statement = splitv2(line, "_");
+
+        for(i = 0; i < statement.size; i++) {
+            statement.commands[i] = strip(statement.commands[i], ' ', strlen(statement.commands[i]));
+        }
+
+        if(!strcmp(statement.commands[0], ENDFUNCTION_TYPE)) { //ENDFUNCTION_TYPE
+            logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+            for(i = lineCount; i < callLine; i++) {
+                _nxt = get_next_statement();
+            }
+        } else if(!strcmp(event_type, FUNCTION_TYPE)) { //event_type = FUNCTION
+            event_interpreter(FUNCTION_TYPE, next_statement);
+            call_statement(event_type, get_next_statement());
+        } else if(!strcmp(statement.commands[0], CALL_TYPE)) { //CALL_TYPE
+            for(i = 0; i < funcsCount; i++) {
+                if(!strcmp(funcs[i].name, statement.commands[1])) {
+                    funcIndex = i;
+                }
+            }
+            if(funcIndex != -1) {
+                if(!strcmp(funcs[funcIndex].name, statement.commands[1])) {
+                    callLine = lineCount;
+                    lineCount = 0;
+                    fseek(eventFile, 0, SEEK_SET);
+                    for(i = 0; i < funcs[funcIndex].lineCount; i++) {
+                        _nxt = get_next_statement();
+                    }
+                    event_interpreter(FUNCTION_TYPE, get_next_statement());
+                    call_statement(FUNCTION_TYPE, get_next_statement());
+                } 
+            } else {
+                logger(event_type, statement.commands[0], ERROR_LEVEL, FUNC_NOT_FOUND);
+                stopPropagation = TRUE;
+            }
         }
     }
 }
@@ -274,10 +428,13 @@ void options_statement(const char* event_type, ssize_t next_statement, char* opt
     if(!stopPropagation) {
         Statement statement;
         size_t statementLength = strlen(line);
-
-        line = lstrip(line, ' ', statementLength);
+        int i;
 
         statement = splitv2(line, "_");
+
+        for(i = 0; i < statement.size; i++) {
+            statement.commands[i] = strip(statement.commands[i], ' ', strlen(statement.commands[i]));
+        }
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             options_statement(event_type, get_next_statement(), option_name);
@@ -285,7 +442,7 @@ void options_statement(const char* event_type, ssize_t next_statement, char* opt
             if(statement.size < 2) {
                 logger(event_type, statement.commands[0], ERROR_LEVEL, COMMANDS_LENGTH);
                 stopPropagation = TRUE;
-            } else if (statement.commands[1] == NULL){
+            } else if (statement.commands[1] == NULL || !strcmp(statement.commands[1], "")){
                 logger(event_type, statement.commands[0], ERROR_LEVEL, TEXTFIELD_EMPTY);
                 stopPropagation = TRUE;
             } else {
@@ -305,10 +462,13 @@ void switch_statement(const char* event_type, ssize_t next_statement, char* opti
     if(!stopPropagation) {
         Statement statement;
         size_t statementLength = strlen(line);
-
-        line = lstrip(line, ' ', statementLength);
+        int i;
 
         statement = splitv2(line, "_");
+
+        for(i = 0; i < statement.size; i++) {
+            statement.commands[i] = strip(statement.commands[i], ' ', strlen(statement.commands[i]));
+        }
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             switch_statement(event_type, get_next_statement(), option_name);
@@ -316,7 +476,7 @@ void switch_statement(const char* event_type, ssize_t next_statement, char* opti
             if(statement.size < 2) {
                 logger(event_type, statement.commands[0], ERROR_LEVEL, COMMANDS_LENGTH);
                 stopPropagation = TRUE;
-            } else if (statement.commands[1] == NULL){
+            } else if (statement.commands[1] == NULL || !strcmp(statement.commands[1], "")){
                 logger(event_type, statement.commands[0], ERROR_LEVEL, TEXTFIELD_EMPTY);
                 stopPropagation = TRUE;
             } else {
@@ -337,10 +497,13 @@ void case_statement(const char* event_type, ssize_t next_statement, char* index)
     if(!stopPropagation) {
         Statement statement;
         size_t statementLength = strlen(line);
-
-        line = lstrip(line, ' ', statementLength);
+        int i;
 
         statement = splitv2(line, "_");
+
+        for(i = 0; i < statement.size; i++) {
+            statement.commands[i] = strip(statement.commands[i], ' ', strlen(statement.commands[i]));
+        }
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) {
             case_statement(CASE_TYPE, get_next_statement(), index);
