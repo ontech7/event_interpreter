@@ -1,43 +1,47 @@
 declare
-    function_someDialog
-        dialog_"Bla bla bla"
-        dialog_"Hello World"
+    function someDialog
+        dialog "Bla bla bla"
+        dialog "Hello World"
     endfunction
 
-    function_otherDialog
-        dialog_"Test test test"
-        read_test
+    function otherDialog
+        dialog "Test test test"
+        read test
     endfunction
 
-    variable_abba_2
-    variable_test_"Let's read this var"
+    variable abba 2
+    variable test "Let's read this var"
 enddeclare
 
-name_"NPC Test"
-dialog_"Do you like coffee?"
+# if prova
+#     dialog "true"
+# endif
 
-options_coffee
-    text_"Yes"
-    text_"No"
+name "NPC Test"
+dialog "Do you like coffee?"
+
+options coffee
+    text "Yes"
+    text "No"
 endoptions
 
-call_someDialog
-call_otherDialog
-read_abba
-set_test_"Changed text"
-read_test
-set_newVar_"test"
-read_newVar
+call someDialog
+call otherDialog
+read abba
+set test "Changed text"
+read test
+set newVar "test"
+read newVar
 
-switch_coffee
-    case_0
-        dialog_"Oh, me too"
+switch coffee
+    case 0
+        dialog "Oh, me too"
     endcase
 
-    case_1
-        dialog_"Mmh... You are a liar... Everyone likes coffee!"
-        wait_1
-        dialog_"Take this cup of coffee. You will like it"
-        addItem_"Cup of coffee"
+    case 1
+        dialog "Mmh... You are a liar... Everyone likes coffee!"
+        wait 1
+        dialog "Take this cup of coffee. You will like it"
+        addItem "Cup of coffee"
     endcase
 endswitch
