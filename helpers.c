@@ -79,7 +79,8 @@ Statement tokenizer(char* s) {
 
     if(whitespaceCount == stringLen) {
         statement.size = 1;
-        statement.commands[0] = "";
+        statement.commands = (char**)calloc(statement.size, sizeof(char*)); 
+        statement.commands[0] = (char*)calloc(0, sizeof(char));
         return statement;
     }
             
@@ -115,7 +116,7 @@ Statement tokenizer(char* s) {
 
 char* cpystring(char* s, int left_index, int right_index, size_t stringLen) {
     int i = 0, j = 0;
-    char* tmp = (char*)calloc(right_index+1 - left_index,sizeof(char));
+    char* tmp = (char*)calloc(right_index+2 - left_index,sizeof(char));
 
     for(i = left_index; i < right_index+1; i++) {
         tmp[j] = s[i];

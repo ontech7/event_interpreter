@@ -262,6 +262,7 @@ void call_statement(const char* event_type, ssize_t next_statement) {
         } else if(!strcmp(statement.commands[0], CALL_TYPE)) { //CALL_TYPE
             for(i = 0; i < funcsCount; i++) {
                 if(!strcmp(funcs[i].name, statement.commands[1])) {
+                    printf("%s\n", funcs[i].name);
                     funcIndex = i;
                 }
             }
