@@ -93,24 +93,20 @@ Statement tokenizer(char* s) {
     }
 
     for(i = 0, j = 0; i < stringLen_flushed; i++, j++) {
-        switch(s_flushed[i]) {
-            case IS_STRING:
-                str_ext = string_extractor(s_flushed, i, stringLen_flushed);
-                statement.commands[statement.size-1] = str_ext.string;
-                i = str_ext.index;
-                j = -1;
-                break;
-            case IS_COMMENT:
-                // Ignore everything ahead this token
-                break;
-            case IS_DELIMITER:
-                statement.commands = realloc(statement.commands, sizeof(char*) * ++statement.size);
-                statement.commands[statement.size-1] = (char*)calloc(64, sizeof(char));
-                j = -1;
-                break;
-            default:
-                statement.commands[statement.size-1][j] = s_flushed[i];
-                break;
+        if(s_flushed[i] == IS_STRING){
+            str_ext = string_extractor(s_flushed, i, stringLen_flushed);
+            statement.commands[statement.size-1] = str_ext.string;
+            i = str_ext.index;
+            j = -1;
+        } else if(s_flushed[i] == IS_COMMENT) {
+            // Ignore everything ahead this token
+            break;
+        } else if(s_flushed[i] == IS_DELIMITER) {
+            statement.commands = realloc(statement.commands, sizeof(char*) * ++statement.size);
+            statement.commands[statement.size-1] = (char*)calloc(64, sizeof(char));
+            j = -1;
+        } else {
+            statement.commands[statement.size-1][j] = s_flushed[i];
         }
     }
 
