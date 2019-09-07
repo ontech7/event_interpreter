@@ -3,22 +3,37 @@ declare
         dialog_"Function test"
         dialog_"funcfunc"
     endfunction
+
     function_prova
         dialog_"Prova"
+        read_test
     endfunction
+
+    variable_abba_2
+    variable_test_"Read variable"
 enddeclare
+
 name_"NPC Test"
 dialog_"Do you like coffee?"
+
 options_coffee
     text_"Yes"
     text_"No"
 endoptions
+
 call_prova
 call_test
+read_abba
+set_test_"Changed text"
+read_test
+set_newVar_"test"
+read_newVar
+
 switch_coffee
     case_0
         dialog_"Oh, me too"
     endcase
+
     case_1
         dialog_"Mmh... You are a liar... Everyone likes coffee!"
         wait_1
