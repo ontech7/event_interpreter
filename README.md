@@ -3,68 +3,89 @@ Validator for the Event Interpreter
 
 ## Event language syntax
 
-- name_$spacedString$
+`name <text>`  
+
+Sets a name to the object.  
   
-`name_"NPC Name"` 
+`dialog <text>`  
 
-Gives a name to the NPC (must be the first statement)
-
-- dialog_$spacedString$
+Sets a dialog to the NPC (based on the order of the 'dialog' statements).  
   
-`dialog_"NPC Name"` 
+`options <name>`  
 
-Sets a dialog to the NPC (based on the order of the 'dialog' statements)
+Creates options for branch features.  
+The 2nd argument is the variable used by a 'switch' statement.  
+Inside 'options' statement, there must be only 'text' statements.  
+To close 'options' statement, there must be an 'endoptions' at the end.  
 
-- options_$string$
+`text <option>`  
+
+Sets one option for the 'options' statement.  
   
-`options_coffee
-    text_"Yes"
-    text_"No"
-endoptions` 
+`switch <name>`  
 
-Creates options for branch features. The 2nd argument is the variable used by a 'switch' statement.
-Inside 'options' statement, there must be only 'text' statements, like in the example.
+Creates a switch branching system.  
+Users 'case' statements based on the order of the option (e.g.: text "Yes" is case 0).  
+To close 'switch' statement, there must be an 'endswitch' at the end.  
 
-- switch_$string$
+`case <index>`  
+
+Creates one case based on the options given.  
+You can write other new options, switches, etc. inside a 'case', without limits (well, based on hardware limits).  
+To close 'case' statement, there must be an 'endcase' at the end.  
+
+`declare`  
+
+Statement that permits to declare variables and functions inside.  
+To close 'declare' statement, there must be an 'enddeclare' at the end.  
+
+N.B.: It's usual to use this statement on top of the file, otherwise statements behind 'declare' CAN'T be read, and an exception will be thrown.  
+
+`function <name>`  
+
+Implements a function that can be reused during the execution by 'call' statement.  
+The function name can be the same of a variable, because they don't comunicate with each other.  
+Everything can be put inside, except for nested functions. An exception will be thrown.  
+To close 'function' statement, there must be an 'endfunction' at the end.  
+
+`call <name>`  
+
+Calls an already defined function, and executes it. At the end of the call, the pointer line returns to the very next statement.  
+The name must be the same of the function, otherwise an exception will be thrown.  
+
+`variable <name> <value>`  
+
+Defines a variable that can be reused and modified during the execution.  
+The variable name can be the same of a function, because they don't comunicate with each other.  
+
+`read <name>`  
+
+Reads the value of a variable.
+
+`wait <string>`  
+
+Wait a certain amount of time (seconds) before doing the very next action.  
   
-`switch_coffee
-    case_0
-        dialog_"Oh, me too"
-    endcase
-    case_1
-        dialog_"Mmh... You are a liar... Everyone likes coffee!"
-        wait_1
-        dialog_"Take this cup of coffee. You will like it"
-        addItem_"Cup of coffee"
-    endcase
-endswitch` 
+`addItem <string>`  
 
-Creates a complex switch branched features, using 'case' statements based on the order of the option (e.g.: "Yes" is case_0).
-You can write other new options, switches, etc. inside a 'case', without limits (well, based on hardware limits).
-
-- wait_$integer_number$
-
-`wait_1`
-
-Wait a certain amount of time (seconds) before doing the very next action. 
-
-- addItem_$spacedString$
-  
-`addItem_"Cup of coffee"`
-
-Adds an item inside Player's inventory, if the item exists (be careful on what name you put in the statement).
-
------
-
-N.B.: Multiline statements such as options, case and switch, must have a closure statement such as endoptions, endcase and endswitch. Usually it's just end-statementname.
+Adds an item inside Player's inventory, if the item exists (be careful on what name you put in the statement, otherwise an exception will be thrown).  
 
 ## Error checks
 
 There are a bunch of error checks, will add some others:
 
-```const char* COMMANDS_LENGTH = "Too few arguments. Expected at least 2.";
+```c
+const char* COMMANDS_LENGTH_2 = "Too few arguments. Expected at least 2.";
+const char* COMMANDS_LENGTH_3 = "Too few arguments. Expected at least 3.";
 const char* NOT_INSIDE_SWITCH = "'case' statement not inside 'switch'. Error occurred.";
 const char* NOT_INSIDE_OPTIONS = "'text' statement not inside 'options'. Error occurred.";
-const char* OPTIONS_NOT_FOUND = "'options' used in 'switch' not found: ";
+const char* OPTIONS_NOT_FOUND = "'options' used in 'switch' not found. Error occurred.";
 const char* UNKNOWN_COMMAND = "Unknown command. Check your code.";
-const char* TEXTFIELD_EMPTY = "'Textfield is empty. Check your code.";```
+const char* SECOND_ARGUMENT_EMPTY = "Second argument is empty. Check your code.";
+const char* THIRD_ARGUMENT_EMPTY = "Third argument is empty. Check your code.";
+const char* NO_NESTED_FUNCTIONS = "Nested function detected. Error occurred.";
+const char* FUNC_NOT_FOUND = "Function not found. Error occurred.";
+const char* VAR_NOT_FOUND = "Variable not found. Error occurred.";
+const char* FUNC_ALREADY_EXISTS = "Function declared already exists. Error occurred.";
+const char* VAR_ALREADY_EXISTS = "Variable declared already exists. Error occurred.";
+```
