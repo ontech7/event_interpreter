@@ -62,6 +62,12 @@ The variable name can be the same of a function, because they don't comunicate w
 
 Reads the value of a variable.
 
+`set <name> <value>`  
+
+Sets a variable with a value.  
+If the variable exists, the value will be changed.
+If the variable doesn't exists, it will be created automatically.
+
 `wait <string>`  
 
 Wait a certain amount of time (seconds) before doing the very next action.  
