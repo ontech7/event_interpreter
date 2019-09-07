@@ -1,16 +1,16 @@
 declare
-    function_test
-        dialog_"Function test"
-        dialog_"funcfunc"
+    function_someDialog
+        dialog_"Bla bla bla"
+        dialog_"Hello World"
     endfunction
 
-    function_prova
-        dialog_"Prova"
+    function_otherDialog
+        dialog_"Test test test"
         read_test
     endfunction
 
     variable_abba_2
-    variable_test_"Read variable"
+    variable_test_"Let's read this var"
 enddeclare
 
 name_"NPC Test"
@@ -21,8 +21,8 @@ options_coffee
     text_"No"
 endoptions
 
-call_prova
-call_test
+call_someDialog
+call_otherDialog
 read_abba
 set_test_"Changed text"
 read_test
