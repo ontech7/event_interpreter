@@ -38,8 +38,8 @@ To close 'case' statement, there must be an 'endcase' at the end.
 
 Creates a condition to be met in order to enter inside it.  
 With 2 arguments checks the existance of the variable, with 4 arguments compares 2nd and 4th argument.  
-Possible conditional checks: >, <, >=, <=, =, !=.
-If the variable is a string, the possible checks are only: =, !=.
+Possible conditional checks: >, <, >=, <=, =, !=.  
+If the variable is a string, the possible checks are only: =, !=.  
 To close 'if' statement, there must be an 'endif' at the end.  
 
 `declare`  
