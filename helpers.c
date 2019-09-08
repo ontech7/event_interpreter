@@ -152,7 +152,7 @@ char* strip(char* s, char delimiter, int stringLen) {
 }
 
 char* get_value_type(char* value) {
-    if(value[0] > '0' && value[0] < '9') {
+    if(value[0] >= '0' && value[0] <= '9') {
         return (char*)INTEGER;
     } else {
         return (char*)STRING;

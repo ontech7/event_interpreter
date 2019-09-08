@@ -658,40 +658,55 @@ void if_statement(const char* event_type, char* next_statement) {
 
                         if(!strcmp(statement.commands[2], EQUAL)) {
                             if(tmpValueArg2 == tmpValueArg4) {
-                                //do if-endif
+                                event_interpreter(event_type, get_next_statement());
+                                if_statement(IF_TYPE, get_next_statement());
+                                return;
                             } else {
-                                //skip if-endif
+                                if_skip_statement(event_type, next_statement);
+                                return;
                             }
                         } else if(!strcmp(statement.commands[2], NOT_EQUAL)) {
                             if(tmpValueArg2 != tmpValueArg4) {
-                                //do if-endif
+                                event_interpreter(event_type, get_next_statement());
+                                if_statement(IF_TYPE, get_next_statement());
+                                return;
                             } else {
-                                //skip if-endif
+                                if_skip_statement(event_type, next_statement);
+                                return;
                             }
                         } else if(!strcmp(statement.commands[2], EQUAL_GREATER)) {
                             if(tmpValueArg2 >= tmpValueArg4) {
-                                //do if-endif
+                                event_interpreter(event_type, get_next_statement());
+                                if_statement(IF_TYPE, get_next_statement());
+                                return;
                             } else {
-                                //skip if-endif
+                                if_skip_statement(event_type, next_statement);
+                                return;
                             }
                         } else if(!strcmp(statement.commands[2], EQUAL_LESS)) {
                             if(tmpValueArg2 <= tmpValueArg4) {
-                                //do if-endif
+                                event_interpreter(event_type, get_next_statement());
+                                if_statement(IF_TYPE, get_next_statement());
+                                return;
                             } else {
-                                //skip if-endif
+                                if_skip_statement(event_type, next_statement);
+                                return;
                             }
                         } else if(!strcmp(statement.commands[2], LESS)) {
                             if(tmpValueArg2 < tmpValueArg4) {
-                                //do if-endif
+                                event_interpreter(event_type, get_next_statement());
+                                if_statement(IF_TYPE, get_next_statement());
+                                return;
                             } else {
-                                //skip if-endif
+                                if_skip_statement(event_type, next_statement);
+                                return;
                             }
                         } else if(!strcmp(statement.commands[2], GREATER)) {
                             if(tmpValueArg2 > tmpValueArg4) {
                                 event_interpreter(event_type, get_next_statement());
                                 if_statement(IF_TYPE, get_next_statement());
+                                return;
                             } else {
-                                //skip if-endif
                                 if_skip_statement(event_type, next_statement);
                                 return;
                             }
