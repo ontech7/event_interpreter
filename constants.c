@@ -7,6 +7,7 @@
 const int DEBUG_MODE = TRUE;
 
 const char* EOF_TYPE = "EOF";
+const char* NOT_FOUND = "NOT_FOUND";
 
 // Event types
 const char* EVENT_TYPE = "event";

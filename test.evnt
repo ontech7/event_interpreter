@@ -2,7 +2,6 @@ declare
     function countdown
         if num > 5
             sub num 1
-            read num
             call countdown
         endif
     endfunction
@@ -13,9 +12,17 @@ declare
     endfunction
 
     variable num 10
+    variable hello "Hello"
+    variable world "World!"
     variable test "Let's read this var"
 enddeclare
 
-call countdown
+#call countdown
 
-read num
+#read num
+
+dialog "$hello$ $world$"
+
+set num 2
+
+dialog $test$

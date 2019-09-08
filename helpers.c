@@ -44,7 +44,10 @@ StringExtracted string_extractor(char*, int, int);
 Statement tokenizer(char*);
 char* cpystring(char*, int, int, int);
 char* strip(char*, char, int);
+char* subs_var(char*);
+char* subs_var_recursive(char*);
 void logger(const char*, char*, const char*, const char*);
+char* get_var_name(char*, int, int);
 char* get_value_type(char*);
 int get_value_as_integer(char*);
 char* get_next_statement();
@@ -115,6 +118,86 @@ Statement tokenizer(char* s) {
     }
 
     return statement;
+}
+
+char* get_var_name(char* s, int index, int stringLen) {
+    int i, j;
+    char* varName = (char*)calloc(64, sizeof(char));
+
+    for(i = index+1, j = 0; i < stringLen; i++, j++) {
+        if(s[i] == IS_VARIABLE) {
+            return varName;
+        }
+        varName[j] = s[i];
+    }
+
+    return varName;
+}
+
+char* subs_var(char* s) {
+    int i, j;
+    int varsIndex = -1;
+    int resume_index = 0; 
+    int stringLen = strlen(s);
+    int varValueLen, varNameLen;
+    char* varName;
+    char* subs_s = (char*)calloc(64, sizeof(char));
+
+    for(i = 0; i < stringLen; i++) {
+        if(s[i] == IS_VARIABLE) {
+            varName = get_var_name(s, i, stringLen);
+            for(j = 0; j < varsCount; j++) {
+                if(!strcmp(vars[j].name, varName)) {
+                    varsIndex = j;
+                }
+            }
+            if(varsIndex != -1) {
+                resume_index = i;
+                break;
+            } else {
+                return (char*)NOT_FOUND;
+            }
+        }
+        subs_s[i] = s[i];
+    }
+
+    if(!strcmp(subs_s, s)) {
+        return "EQUAL";
+    }
+
+    if(varsIndex != -1) {
+        varValueLen = strlen(vars[varsIndex].value);
+        varNameLen = strlen(vars[varsIndex].name);
+
+        //Substituting varName to actual varValue
+        for(i = resume_index, j = 0; j < varValueLen; i++, j++) {
+            subs_s[i] = vars[varsIndex].value[j];
+        }
+
+        //Copying string after the second special symbol
+        for(i = resume_index + varValueLen, j = resume_index + varNameLen + 2; j < stringLen; i++, j++) {
+            subs_s[i] = s[j];
+        }
+
+        return subs_s;
+    } else {
+        return s;
+    }
+}
+
+char* subs_var_recursive(char* s) {
+    char* tmp = subs_var(s);
+    char* subs_s = subs_var(s);
+
+    if(!strcmp(tmp, "EQUAL")) {
+        return s;
+    }
+
+    while((tmp = subs_var(tmp)) != "EQUAL") {
+        subs_s = subs_var(subs_s);
+    }
+
+    return subs_s;
 }
 
 char* cpystring(char* s, int left_index, int right_index, int stringLen) {

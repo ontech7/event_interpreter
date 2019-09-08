@@ -56,6 +56,7 @@ void event_interpreter(const char* event_type, char* next_statement) {
                 return;
             } else {
                 logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+                logger(event_type, subs_var_recursive(statement.commands[1]), VALUE_LEVEL, "");
                 return;
             }
         } else if (!strcmp(statement.commands[0], CALL_TYPE)) { // CALL_TYPE
