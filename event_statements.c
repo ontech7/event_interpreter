@@ -213,7 +213,7 @@ void event_interpreter(const char* event_type, char* next_statement) {
                 logger(event_type, statement.commands[0], TYPE_LEVEL, "");
                 return;
             }
-        } else if (!strcmp(statement.commands[0], ENDOPTIONS_TYPE)) { // ENDOPTIONS_TYPEs
+        } else if (!strcmp(statement.commands[0], ENDOPTIONS_TYPE)) { // ENDOPTIONS_TYPE
             logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
             stopPropagation = TRUE;
             return;
@@ -774,6 +774,30 @@ void if_skip_statement(const char* event_type, char* next_statement) {
             return;
         } else if (!strcmp(statement.commands[0], ENDIF_TYPE)) { //ENDIF_TYPE
             logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+            return;
+        } else if (!strcmp(statement.commands[0], ENDOPTIONS_TYPE)) { // ENDOPTIONS_TYPE
+            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
+            stopPropagation = TRUE;
+            return;
+        } else if (!strcmp(statement.commands[0], ENDCASE_TYPE)) { // ENDCASE_TYPE
+            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
+            stopPropagation = TRUE;
+            return;
+        } else if (!strcmp(statement.commands[0], ENDIF_TYPE)) { // ENDIF_TYPE
+            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
+            stopPropagation = TRUE;
+            return;
+        } else if (!strcmp(statement.commands[0], ENDSWITCH_TYPE)) { // ENDSWITCH_TYPE
+            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
+            stopPropagation = TRUE;
+            return;
+        } else if (!strcmp(statement.commands[0], ENDDECLARE_TYPE)) { // ENDDECLARE_TYPE
+            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
+            stopPropagation = TRUE;
+            return;
+        } else if (!strcmp(statement.commands[0], ENDFUNCTION_TYPE)) { // ENDFUNCTION_TYPE
+            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
+            stopPropagation = TRUE;
             return;
         } else { //Skip statements
             if_skip_statement(event_type, get_next_statement());
