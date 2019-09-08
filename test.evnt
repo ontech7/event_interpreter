@@ -21,27 +21,4 @@ dialog "Do you like coffee?"
 
 call countdown
 
-options coffee
-    text "Yes"
-    text "No"
-endoptions
-
-#call otherDialog
 read num
-set test "Changed text"
-read test
-set newVar "test"
-read newVar
-
-switch coffee
-    case 0
-        dialog "Oh, me too"
-    endcase
-
-    case 1
-        dialog "Mmh... You are a liar... Everyone likes coffee!"
-        wait 1
-        dialog "Take this cup of coffee. You will like it"
-        addItem "Cup of coffee"
-    endcase
-endswitch

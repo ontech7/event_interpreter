@@ -26,7 +26,7 @@ void event_interpreter(const char* event_type, char* next_statement) {
         statement = tokenizer(line);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
-            event_interpreter(event_type, get_next_statement());
+            //event_interpreter(event_type, get_next_statement());
             return;
         } else if (!strcmp(statement.commands[0], DECLARE_TYPE)) { // DECLARE_TYPE
             logger(event_type, statement.commands[0], TYPE_LEVEL, "");
@@ -335,6 +335,7 @@ void call_statement(const char* event_type, char* next_statement, int callLine) 
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             call_statement(event_type, get_next_statement(), callLine);
+            return;
         } else if(!strcmp(statement.commands[0], CALL_TYPE)) { //CALL_TYPE
             for(i = 0; i < funcsCount; i++) {
                 if(!strcmp(funcs[i].name, statement.commands[1])) {
@@ -342,17 +343,15 @@ void call_statement(const char* event_type, char* next_statement, int callLine) 
                 }
             }
             if(funcIndex != -1) {
-                lineCount = 0;
-                fseek(eventFile, 0, SEEK_SET);
-                for(i = 0; i < funcs[funcIndex].lineCount; i++) {
-                    next_statement = get_next_statement();
-                }
+                skip_statements_from_beginning(funcs[funcIndex].lineCount);
                 function_statement(FUNCTION_TYPE, next_statement, callLine);
+                skip_statements_from_beginning(callLine);
+                return;
             } else { //FUNC_NOT_FOUND
                 logger(event_type, statement.commands[0], ERROR_LEVEL, FUNC_NOT_FOUND);
                 stopPropagation = TRUE;
+                return;
             }
-            return;
         } 
     }
 }
@@ -373,9 +372,7 @@ void function_statement(const char* event_type, char* next_statement, int callLi
             function_statement(event_type, get_next_statement(), callLine);
             return;
         } else if(!strcmp(statement.commands[0], ENDFUNCTION_TYPE)) { //ENDFUNCTION_TYPE
-            for(i = lineCount; i < callLine; i++) {
-                next_statement = get_next_statement();
-            }
+            logger(event_type, statement.commands[0], TYPE_LEVEL, "");
             return;
         } else {
             event_interpreter(event_type, next_statement);

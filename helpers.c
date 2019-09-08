@@ -48,6 +48,7 @@ void logger(const char*, char*, const char*, const char*);
 char* get_value_type(char*);
 int get_value_as_integer(char*);
 char* get_next_statement();
+void skip_statements_from_beginning(int);
 
 StringExtracted string_extractor(char* s, int index, int stringLen) {
     StringExtracted str_ext;
@@ -177,6 +178,15 @@ char* get_next_statement() {
     }
 
     return line;
+}
+
+void skip_statements_from_beginning(int to) {
+    int i;
+    lineCount = 0;
+    fseek(eventFile, 0, SEEK_SET);
+    for(i = 0; i < to; i++) {
+        next_statement = get_next_statement();
+    }
 }
 
 void logger(const char* event_type, char* command, const char* logger_level, const char* custom_msg) {
