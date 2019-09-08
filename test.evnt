@@ -1,7 +1,10 @@
 declare
-    function someDialog
-        dialog "Bla bla bla"
-        dialog "Hello World"
+    function countdown
+        if num > 5
+            sub num 1
+            read num
+            call countdown
+        endif
     endfunction
 
     function otherDialog
@@ -9,25 +12,22 @@ declare
         read test
     endfunction
 
-    variable abba 2
+    variable num 10
     variable test "Let's read this var"
 enddeclare
 
-# if prova
-#     dialog "true"
-# endif
-
 name "NPC Test"
 dialog "Do you like coffee?"
+
+call countdown
 
 options coffee
     text "Yes"
     text "No"
 endoptions
 
-call someDialog
-call otherDialog
-read abba
+#call otherDialog
+read num
 set test "Changed text"
 read test
 set newVar "test"

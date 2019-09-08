@@ -11,9 +11,9 @@ int main() {
         exit(EXIT_FAILURE);
     }    
 
-    while ((_nxt = get_next_statement()) != -1) {
+    while ((next_statement = get_next_statement()) != EOF_TYPE) {
         if(!stopPropagation) {
-            event_interpreter(EVENT_TYPE, _nxt);
+            event_interpreter(EVENT_TYPE, next_statement);
         } else {
             break;
         }

@@ -22,16 +22,16 @@ typedef struct{
 typedef struct{
     char* name;
     char* value;
+    char* type;
 } Variable;
 
 // Useful variables
 int stopPropagation = FALSE;
 FILE* eventFile;
 char* line = NULL;
-size_t strLength = 0;
-ssize_t _nxt;
+int strLength = 0;
+char* next_statement;
 int lineCount = 0;
-int callLine = 0;
 
 // Storage
 Function funcs[100];
@@ -40,14 +40,16 @@ Variable vars[100];
 int funcsCount = 0;
 int varsCount = 0;
 
-StringExtracted string_extractor(char*, int, size_t);
+StringExtracted string_extractor(char*, int, int);
 Statement tokenizer(char*);
-char* cpystring(char*, int, int, size_t);
-char* strip(char*, char, size_t);
+char* cpystring(char*, int, int, int);
+char* strip(char*, char, int);
 void logger(const char*, char*, const char*, const char*);
-ssize_t get_next_statement();
+char* get_value_type(char*);
+int get_value_as_integer(char*);
+char* get_next_statement();
 
-StringExtracted string_extractor(char* s, int index, size_t stringLen) {
+StringExtracted string_extractor(char* s, int index, int stringLen) {
     StringExtracted str_ext;
 
     str_ext.string = (char*)calloc((int)stringLen - index + 1, sizeof(char*));
@@ -114,7 +116,7 @@ Statement tokenizer(char* s) {
     return statement;
 }
 
-char* cpystring(char* s, int left_index, int right_index, size_t stringLen) {
+char* cpystring(char* s, int left_index, int right_index, int stringLen) {
     int i = 0, j = 0;
     char* tmp = (char*)calloc(right_index+2 - left_index,sizeof(char));
 
@@ -126,7 +128,7 @@ char* cpystring(char* s, int left_index, int right_index, size_t stringLen) {
     return tmp;
 }
 
-char* strip(char* s, char delimiter, size_t stringLen) {
+char* strip(char* s, char delimiter, int stringLen) {
     int i = 0;
     char* tmpStr = (char*)calloc(stringLen,sizeof(char));
     int left_index = 0, right_index = 0;
@@ -148,15 +150,33 @@ char* strip(char* s, char delimiter, size_t stringLen) {
     return cpystring(s, left_index, right_index, stringLen);
 }
 
-ssize_t get_next_statement() {
+char* get_value_type(char* value) {
+    if(value[0] > '0' && value[0] < '9') {
+        return (char*)INTEGER;
+    } else {
+        return (char*)STRING;
+    }
+}
+
+int get_value_as_integer(char* value) {
+    return atoi(value);
+}
+
+char* get_next_statement() {
     lineCount++;
-    ssize_t next_statement = getline(&line, &strLength, eventFile);
+    int next_statement = getline(&line, &strLength, eventFile);
+
+    if(next_statement == -1) {
+        return (char*)EOF_TYPE;
+    }
+
     int i, stringSize = strlen(line);
     for(i = 0; i < stringSize; i++) {
         if(line[i] == '\n')
             line[i] = '\0';
     }
-    return next_statement;
+
+    return line;
 }
 
 void logger(const char* event_type, char* command, const char* logger_level, const char* custom_msg) {
