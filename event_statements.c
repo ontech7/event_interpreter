@@ -668,7 +668,12 @@ void if_statement(const char* event_type, char* next_statement) {
                     }
                 }
                 if(varsIndex != -1) {
-                    logger(event_type, vars[varsIndex].value, VALUE_LEVEL, "");
+                    event_interpreter(event_type, get_next_statement());
+                    if_statement(IF_TYPE, get_next_statement());
+                    return;
+                } else {
+                    if_skip_statement(event_type, next_statement);
+                    return;
                 }
             } else if (statement.size == 4) {
                 for(i = 0; i < varsCount; i++) {
@@ -677,7 +682,8 @@ void if_statement(const char* event_type, char* next_statement) {
                     }
                 }
                 if(varsIndex != -1) {
-                    if(!strcmp(get_value_type(statement.commands[3]), vars[varsIndex].type)) {
+                    if(!strcmp(get_value_type(statement.commands[3]), vars[varsIndex].type) 
+                    && !strcmp(vars[varsIndex].type, INTEGER)) {
                         tmpValueArg2 = get_value_as_integer(vars[varsIndex].value);
                         tmpValueArg4 = get_value_as_integer(statement.commands[3]);
 
@@ -740,7 +746,33 @@ void if_statement(const char* event_type, char* next_statement) {
                             stopPropagation = TRUE;
                             return;
                         }
-                    } else {
+                    } if(!strcmp(get_value_type(statement.commands[3]), vars[varsIndex].type) 
+                    && !strcmp(vars[varsIndex].type, STRING)) {
+                        if(!strcmp(statement.commands[2], EQUAL)) {
+                            if(!strcmp(statement.commands[3], vars[varsIndex].value)) {
+                                event_interpreter(event_type, get_next_statement());
+                                if_statement(IF_TYPE, get_next_statement());
+                                return;
+                            } else {
+                                if_skip_statement(event_type, next_statement);
+                                return;
+                            }
+                        } else if(!strcmp(statement.commands[2], NOT_EQUAL)) {
+                            if(strcmp(statement.commands[3], vars[varsIndex].value) > 0 ||
+                            strcmp(statement.commands[3], vars[varsIndex].value) < 0) {
+                                event_interpreter(event_type, get_next_statement());
+                                if_statement(IF_TYPE, get_next_statement());
+                                return;
+                            } else {
+                                if_skip_statement(event_type, next_statement);
+                                return;
+                            }
+                        } else {
+                            logger(event_type, statement.commands[0], ERROR_LEVEL, UNKNOWN_SYMBOL);
+                            stopPropagation = TRUE;
+                            return;
+                        }
+                    }else {
                         logger(event_type, statement.commands[0], ERROR_LEVEL, DIFFERENT_TYPES);
                         stopPropagation = TRUE;
                         return;
