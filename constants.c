@@ -4,6 +4,8 @@
 #define TRUE 1
 #define FALSE 0
 
+const int DEBUG_MODE = TRUE;
+
 const char* EOF_TYPE = "EOF";
 
 // Event types
@@ -31,6 +33,10 @@ const char* EMPTY_TYPE = "";
 const char IS_STRING = '"';
 const char IS_COMMENT = '#';
 const char IS_DELIMITER = ' ';
+const char IS_VARIABLE = '$';
+const char IS_SPECIAL_CHARACTER = '\\';
+const char IS_ARRAY_OPEN = '[';
+const char IS_ARRAY_CLOSED = ']';
 
 // Conditional check
 const char* EQUAL = "=";
@@ -43,6 +49,7 @@ const char* LESS = "<";
 // Value types
 const char* STRING = "string";
 const char* INTEGER = "integer";
+const char* ARRAY = "array";
 
 // Closure types
 const char* ENDOPTIONS_TYPE = "endoptions";
@@ -78,5 +85,4 @@ const char* FUNC_ALREADY_EXISTS = "Function declared already exists. Error occur
 const char* VAR_ALREADY_EXISTS = "Variable declared already exists. Error occurred.";
 const char* STRING_TYPE_INVALID = "Type invalid. Variable is declared as 'string'. Error occurred.";
 const char* DIFFERENT_TYPES = "The two compared values have different types. Error occurred.";
-
-const int DEBUG_MODE = TRUE;
+const char* WRONG_CLOSURE = "Wrong closure of the statement. Error occurred.";

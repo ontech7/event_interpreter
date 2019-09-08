@@ -213,6 +213,30 @@ void event_interpreter(const char* event_type, char* next_statement) {
                 logger(event_type, statement.commands[0], TYPE_LEVEL, "");
                 return;
             }
+        } else if (!strcmp(statement.commands[0], ENDOPTIONS_TYPE)) { // ENDOPTIONS_TYPEs
+            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
+            stopPropagation = TRUE;
+            return;
+        } else if (!strcmp(statement.commands[0], ENDCASE_TYPE)) { // ENDCASE_TYPE
+            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
+            stopPropagation = TRUE;
+            return;
+        } else if (!strcmp(statement.commands[0], ENDIF_TYPE)) { // ENDIF_TYPE
+            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
+            stopPropagation = TRUE;
+            return;
+        } else if (!strcmp(statement.commands[0], ENDSWITCH_TYPE)) { // ENDSWITCH_TYPE
+            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
+            stopPropagation = TRUE;
+            return;
+        } else if (!strcmp(statement.commands[0], ENDDECLARE_TYPE)) { // ENDDECLARE_TYPE
+            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
+            stopPropagation = TRUE;
+            return;
+        } else if (!strcmp(statement.commands[0], ENDFUNCTION_TYPE)) { // ENDFUNCTION_TYPE
+            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
+            stopPropagation = TRUE;
+            return;
         } else { // UNKNOWN_COMMAND
             logger(event_type, statement.commands[0], ERROR_LEVEL, UNKNOWN_COMMAND);
             stopPropagation = TRUE;
@@ -730,7 +754,7 @@ void if_statement(const char* event_type, char* next_statement) {
                 stopPropagation = TRUE;
                 return;
             }
-        }  else {
+        } else {
             event_interpreter(event_type, next_statement);
             if_statement(IF_TYPE, get_next_statement());
             return;
