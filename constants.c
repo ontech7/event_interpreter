@@ -28,6 +28,8 @@ const char* SET_TYPE = "set";
 const char* CALL_TYPE = "call";
 const char* ADD_TYPE = "add";
 const char* SUB_TYPE = "sub";
+const char* MUL_TYPE = "mul";
+const char* DIV_TYPE = "div";
 const char* EMPTY_TYPE = "";
 
 // Special character check
@@ -87,3 +89,4 @@ const char* VAR_ALREADY_EXISTS = "Variable declared already exists. Error occurr
 const char* STRING_TYPE_INVALID = "Type invalid. Variable is declared as 'string'. Error occurred.";
 const char* DIFFERENT_TYPES = "The two compared values have different types. Error occurred.";
 const char* WRONG_CLOSURE = "Wrong closure of the statement. Error occurred.";
+const char* DIV_ZERO = "Can't divide by zero. Error occurred.";

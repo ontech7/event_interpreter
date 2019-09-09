@@ -19,10 +19,13 @@ enddeclare
 
 #call countdown
 
-#read num
-
 dialog "$hello$ $world$"
 
 set num 2
-
 dialog $test$
+
+mul num 3
+read num
+
+div num 2
+read num
