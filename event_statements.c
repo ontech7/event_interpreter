@@ -1,24 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "helpers.c"
-
-void event_interpreter(const char*, char*);
-void declare_statement(const char*, char*);
-void function_skip_statement(const char*, char*);
-void set_statement(const char*, char*);
-void read_statement(const char*, char*);
-void add_statement(const char*, char*);
-void sub_statement(const char*, char*);
-void mul_statement(const char*, char*);
-void div_statement(const char*, char*);
-void call_statement(const char*, char*, int);
-void options_statement(const char*, char*);
-void switch_statement(const char*, char*);
-void case_statement(const char*, char*);
-void if_statement(const char*, char*);
-void if_skip_statement(const char*, char*);
-void function_statement(const char*, char*, int);
+#include "utils/definitions.h"
+#include "utils/constants.h"
+#include "utils/variables.h"
 
 void event_interpreter(const char* event_type, char* next_statement) {
     if(!stopPropagation) {
@@ -358,30 +343,6 @@ void declare_statement(const char* event_type, char* next_statement) {
         } else { //UNKNOWN_COMMAND
             logger(event_type, statement.commands[0], ERROR_LEVEL, UNKNOWN_COMMAND);
             stopPropagation = TRUE;
-            return;
-        }
-    }
-}
-
-void function_skip_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
-        Statement statement;
-        int i;
-
-        statement = tokenizer(line);
-
-        if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
-            function_skip_statement(event_type, get_next_statement());
-            return;
-        } else if (!strcmp(statement.commands[0], ENDFUNCTION_TYPE)) { //ENDFUNCTION_TYPE
-            logger(event_type, statement.commands[0], TYPE_LEVEL, "");
-            return;
-        } else if (!strcmp(statement.commands[0], FUNCTION_TYPE)) { //FUNCTION_TYPE
-            logger(event_type, statement.commands[0], ERROR_LEVEL, NO_NESTED_FUNCTIONS);
-            stopPropagation = TRUE;
-            return;
-        } else { //Skip statements
-            function_skip_statement(event_type, get_next_statement());
             return;
         }
     }
@@ -906,50 +867,6 @@ void if_statement(const char* event_type, char* next_statement) {
         } else {
             event_interpreter(event_type, next_statement);
             if_statement(IF_TYPE, get_next_statement());
-            return;
-        }
-    }
-}
-
-void if_skip_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
-        Statement statement;
-        int i;
-
-        statement = tokenizer(line);
-
-        if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
-            if_skip_statement(event_type, get_next_statement());
-            return;
-        } else if (!strcmp(statement.commands[0], ENDIF_TYPE)) { //ENDIF_TYPE
-            logger(event_type, statement.commands[0], TYPE_LEVEL, "");
-            return;
-        } else if (!strcmp(statement.commands[0], ENDOPTIONS_TYPE)) { // ENDOPTIONS_TYPE
-            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
-            stopPropagation = TRUE;
-            return;
-        } else if (!strcmp(statement.commands[0], ENDCASE_TYPE)) { // ENDCASE_TYPE
-            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
-            stopPropagation = TRUE;
-            return;
-        } else if (!strcmp(statement.commands[0], ENDIF_TYPE)) { // ENDIF_TYPE
-            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
-            stopPropagation = TRUE;
-            return;
-        } else if (!strcmp(statement.commands[0], ENDSWITCH_TYPE)) { // ENDSWITCH_TYPE
-            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
-            stopPropagation = TRUE;
-            return;
-        } else if (!strcmp(statement.commands[0], ENDDECLARE_TYPE)) { // ENDDECLARE_TYPE
-            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
-            stopPropagation = TRUE;
-            return;
-        } else if (!strcmp(statement.commands[0], ENDFUNCTION_TYPE)) { // ENDFUNCTION_TYPE
-            logger(event_type, statement.commands[0], ERROR_LEVEL, WRONG_CLOSURE);
-            stopPropagation = TRUE;
-            return;
-        } else { //Skip statements
-            if_skip_statement(event_type, get_next_statement());
             return;
         }
     }

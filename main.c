@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "event_statements.c"
+#include "utils/definitions.h"
+#include "utils/constants.h"
+#include "utils/variables.h"
 
 int main(int argc, char **argv) {
     if(argc != 2) {

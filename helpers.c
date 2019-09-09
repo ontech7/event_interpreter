@@ -1,57 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "constants.c"
-
-// Structures
-typedef struct{
-    char** commands;
-    int size;
-} Statement;
-
-typedef struct{
-    char* string;
-    int index;
-} StringExtracted;
-
-typedef struct{
-    char* name;
-    int lineCount;
-} Function;
-
-typedef struct{
-    char* name;
-    char* value;
-    char* type;
-} Variable;
-
-// Useful variables
-int stopPropagation = FALSE;
-FILE* eventFile;
-char* line = NULL;
-int strLength = 0;
-char* next_statement;
-int lineCount = 0;
-
-// Storage
-Function funcs[100];
-Variable vars[100];
-
-int funcsCount = 0;
-int varsCount = 0;
-
-StringExtracted string_extractor(char*, int, int);
-Statement tokenizer(char*);
-char* cpystring(char*, int, int, int);
-char* strip(char*, char, int);
-char* subs_var(char*);
-char* subs_var_recursive(char*);
-void logger(const char*, char*, const char*, const char*);
-char* get_var_name(char*, int, int);
-char* get_value_type(char*);
-int get_value_as_integer(char*);
-char* get_next_statement();
-void skip_statements_from_beginning(int);
+#include "utils/definitions.h"
+#include "utils/constants.h"
+#include "utils/variables.h"
 
 StringExtracted string_extractor(char* s, int index, int stringLen) {
     StringExtracted str_ext;

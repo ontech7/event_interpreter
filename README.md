@@ -1,6 +1,12 @@
 # Event Interpreter Validator
 Validator for the Event Interpreter
 
+## Compiling guide
+
+To compile the artifact, just write this in the terminal:
+
+```gcc -I. *.c -o <output_name>```
+
 ## Event language statements
 
 `name <text>`  
@@ -83,6 +89,15 @@ Adds 'value' to the current value of 'name' variable.
 `sub <name> <value>`  
 
 Subtracts 'value' to the current value of 'name' variable.  
+
+`mul <name> <value>`  
+
+Multiply 'value' to the current value of 'name' variable.  
+
+`div <name> <value>`  
+
+Divides 'value' to the current value of 'name' variable.  
+It's not possible to divide by zero.  
 
 `wait <string>`  
 
