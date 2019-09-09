@@ -19,8 +19,9 @@ typedef struct {
 
 typedef struct {
     char* name;
-    char* value;
+    char** value;
     char* type;
+    int size;
 } Variable;
 
 //helpers.c

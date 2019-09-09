@@ -2,7 +2,7 @@
 #include "utils/definitions.h"
 
 #ifndef _VARIABLES_H_
-#define _VARIABLE_H_
+#define _VARIABLES_H_
 
 // Useful variables
 extern int stopPropagation;

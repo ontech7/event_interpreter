@@ -118,12 +118,12 @@ char* subs_var(char* s) {
     }
 
     if(varsIndex != -1) {
-        varValueLen = strlen(vars[varsIndex].value);
+        varValueLen = strlen(vars[varsIndex].value[0]);
         varNameLen = strlen(vars[varsIndex].name);
 
         //Substituting varName to actual varValue
         for(i = resume_index, j = 0; j < varValueLen; i++, j++) {
-            subs_s[i] = vars[varsIndex].value[j];
+            subs_s[i] = vars[varsIndex].value[0][j];
         }
 
         //Copying string after the second special symbol

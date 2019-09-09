@@ -88,9 +88,6 @@ void event_interpreter(const char* event_type, char* next_statement) {
             } else if (statement.commands[2] == NULL || !strcmp(statement.commands[2], "")){
                 logger(event_type, statement.commands[0], ERROR_LEVEL, THIRD_ARGUMENT_EMPTY);
                 stopPropagation = TRUE;
-            } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
-                logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
-                stopPropagation = TRUE;
             } else {
                 logger(event_type, statement.commands[0], TYPE_LEVEL, "");
                 add_statement(ADD_TYPE, next_statement);
@@ -104,9 +101,6 @@ void event_interpreter(const char* event_type, char* next_statement) {
                 stopPropagation = TRUE;
             } else if (statement.commands[2] == NULL || !strcmp(statement.commands[2], "")){
                 logger(event_type, statement.commands[0], ERROR_LEVEL, THIRD_ARGUMENT_EMPTY);
-                stopPropagation = TRUE;
-            } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
-                logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
                 stopPropagation = TRUE;
             } else {
                 logger(event_type, statement.commands[0], TYPE_LEVEL, "");
@@ -122,9 +116,6 @@ void event_interpreter(const char* event_type, char* next_statement) {
             } else if (statement.commands[2] == NULL || !strcmp(statement.commands[2], "")){
                 logger(event_type, statement.commands[0], ERROR_LEVEL, THIRD_ARGUMENT_EMPTY);
                 stopPropagation = TRUE;
-            } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
-                logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
-                stopPropagation = TRUE;
             } else {
                 logger(event_type, statement.commands[0], TYPE_LEVEL, "");
                 mul_statement(MUL_TYPE, next_statement);
@@ -138,9 +129,6 @@ void event_interpreter(const char* event_type, char* next_statement) {
                 stopPropagation = TRUE;
             } else if (statement.commands[2] == NULL || !strcmp(statement.commands[2], "")){
                 logger(event_type, statement.commands[0], ERROR_LEVEL, THIRD_ARGUMENT_EMPTY);
-                stopPropagation = TRUE;
-            } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
-                logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
                 stopPropagation = TRUE;
             } else {
                 logger(event_type, statement.commands[0], TYPE_LEVEL, "");
@@ -327,7 +315,9 @@ void declare_statement(const char* event_type, char* next_statement) {
                 }
                 if(varsIndex == -1) {
                     vars[varsCount].name = statement.commands[1];
-                    vars[varsCount].value = statement.commands[2];
+                    vars[varsCount].value = (char**)calloc(1, sizeof(char*));
+                    vars[varsCount].value[0] = statement.commands[2];
+                    vars[varsCount].size = 1;
                     vars[varsCount].type = get_value_type(statement.commands[2]);
                     varsCount++;
                     declare_statement(event_type, get_next_statement());
@@ -407,7 +397,7 @@ void function_statement(const char* event_type, char* next_statement, int callLi
 void set_statement(const char* event_type, char* next_statement) {
     if(!stopPropagation) {
         Statement statement;
-        int i, varsIndex = -1;
+        int i, varsIndex1 = -1, varsIndex2 = -1;
 
         statement = tokenizer(line);
 
@@ -417,20 +407,61 @@ void set_statement(const char* event_type, char* next_statement) {
         } else {
             for(i = 0; i < varsCount; i++) {
                 if(!strcmp(vars[i].name, statement.commands[1])) {
-                    varsIndex = i;
+                    varsIndex1 = i;
                 }
             }
-            if(varsIndex != -1) {
-                vars[varsIndex].name = statement.commands[1];
-                vars[varsIndex].value = statement.commands[2];
-                vars[varsIndex].type = get_value_type(statement.commands[2]);
-                return;
+            if(varsIndex1 != -1) {
+                if(!strcmp(get_value_type(statement.commands[2]), INTEGER)) {
+                    vars[varsIndex1].name = statement.commands[1];
+                    vars[varsIndex1].value[0] = statement.commands[2];
+                    vars[varsIndex1].type = get_value_type(statement.commands[2]);
+                    return;
+                } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
+                    for(i = 0; i < varsCount; i++) {
+                        if(!strcmp(vars[i].name, statement.commands[2])) {
+                            varsIndex2 = i;
+                        }
+                    }
+                    if(varsIndex2 != -1) {
+                        vars[varsIndex1].name = statement.commands[1];
+                        vars[varsIndex1].value[0] = vars[varsIndex2].value[0];
+                        vars[varsIndex1].type = get_value_type(vars[varsIndex2].value[0]);
+                        return;
+                    } else {
+                        logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_NOT_FOUND);
+                        stopPropagation = TRUE;
+                        return;
+                    }
+                }
             } else {
-                vars[varsCount].name = statement.commands[1];
-                vars[varsCount].value = statement.commands[2];
-                vars[varsCount].type = get_value_type(statement.commands[2]);
-                varsCount++;
-                return;
+                if(!strcmp(get_value_type(statement.commands[2]), INTEGER)) {
+                    vars[varsCount].name = statement.commands[1];
+                    vars[varsCount].value = (char**)calloc(1, sizeof(char*));
+                    vars[varsCount].value[0] = statement.commands[2];
+                    vars[varsCount].size = 1;
+                    vars[varsCount].type = get_value_type(statement.commands[2]);
+                    varsCount++;
+                    return;
+                } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
+                    for(i = 0; i < varsCount; i++) {
+                        if(!strcmp(vars[i].name, statement.commands[2])) {
+                            varsIndex2 = i;
+                        }
+                    }
+                    if(varsIndex2 != -1) {
+                        vars[varsCount].name = statement.commands[1];
+                        vars[varsCount].value = (char**)calloc(1, sizeof(char*));
+                        vars[varsCount].value[0] = vars[varsIndex2].value[0];
+                        vars[varsCount].size = 1;
+                        vars[varsCount].type = get_value_type(vars[varsIndex2].value[0]);
+                        varsCount++;
+                        return;
+                    } else {
+                        logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_NOT_FOUND);
+                        stopPropagation = TRUE;
+                        return;
+                    }
+                }
             }
         }
     }
@@ -452,7 +483,7 @@ void read_statement(const char* event_type, char* next_statement) {
                 }
             }
             if(varsIndex != -1) {
-                logger(event_type, vars[varsIndex].value, VALUE_LEVEL, "");
+                logger(event_type, subs_var_recursive(vars[varsIndex].value[0]), VALUE_LEVEL, "");
                 return;
             } else {
                 logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_NOT_FOUND);
@@ -466,7 +497,7 @@ void read_statement(const char* event_type, char* next_statement) {
 void add_statement(const char* event_type, char* next_statement) {
     if(!stopPropagation) {
         Statement statement;
-        int i, varsIndex = -1;
+        int i, varsIndex1 = -1, varsIndex2 = -1;
         int tmpValue = 0;
 
         statement = tokenizer(line);
@@ -477,16 +508,40 @@ void add_statement(const char* event_type, char* next_statement) {
         } else {
             for(i = 0; i < varsCount; i++) {
                 if(!strcmp(vars[i].name, statement.commands[1])) {
-                    varsIndex = i;
+                    varsIndex1 = i;
                 }
             }
-            if(varsIndex != -1) {
-                if(!strcmp(vars[varsIndex].type, INTEGER)) {
-                    tmpValue = get_value_as_integer(vars[varsIndex].value);
-                    tmpValue = tmpValue + get_value_as_integer(statement.commands[2]);
-                    sprintf(vars[varsIndex].value, "%d", tmpValue);
-                    return;
-                } else if(!strcmp(vars[varsIndex].type, STRING)) {
+            if(varsIndex1 != -1) {
+                if(!strcmp(vars[varsIndex1].type, INTEGER)) {
+                    if(!strcmp(get_value_type(statement.commands[2]), INTEGER)) {
+                        tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                        tmpValue = tmpValue + get_value_as_integer(statement.commands[2]);
+                        sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                        return;
+                    } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
+                        for(i = 0; i < varsCount; i++) {
+                            if(!strcmp(vars[i].name, statement.commands[2])) {
+                                varsIndex2 = i;
+                            }
+                        }
+                        if(varsIndex2 != -1) {
+                            if(!strcmp(vars[varsIndex2].type, INTEGER)) {
+                                tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                                tmpValue = tmpValue + get_value_as_integer(vars[varsIndex2].value[0]);
+                                sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                                return;
+                            } else if(!strcmp(vars[varsIndex2].type, STRING)){
+                                logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
+                                stopPropagation = TRUE;
+                                return;
+                            }
+                        } else {
+                            logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_NOT_FOUND);
+                            stopPropagation = TRUE;
+                            return;
+                        }
+                    }
+                } else if(!strcmp(vars[varsIndex1].type, STRING)) {
                     logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
                     stopPropagation = TRUE;
                     return;
@@ -503,27 +558,51 @@ void add_statement(const char* event_type, char* next_statement) {
 void sub_statement(const char* event_type, char* next_statement) {
     if(!stopPropagation) {
         Statement statement;
-        int i, varsIndex = -1;
+        int i, varsIndex1 = -1, varsIndex2 = -1;
         int tmpValue = 0;
 
         statement = tokenizer(line);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
-            sub_statement(event_type, get_next_statement());
+            add_statement(event_type, get_next_statement());
             return;
         } else {
             for(i = 0; i < varsCount; i++) {
                 if(!strcmp(vars[i].name, statement.commands[1])) {
-                    varsIndex = i;
+                    varsIndex1 = i;
                 }
             }
-            if(varsIndex != -1) {
-                if(!strcmp(vars[varsIndex].type, INTEGER)) {
-                    tmpValue = get_value_as_integer(vars[varsIndex].value);
-                    tmpValue = tmpValue - get_value_as_integer(statement.commands[2]);
-                    sprintf(vars[varsIndex].value, "%d", tmpValue);
-                    return;
-                } else if(!strcmp(vars[varsIndex].type, STRING)) {
+            if(varsIndex1 != -1) {
+                if(!strcmp(vars[varsIndex1].type, INTEGER)) {
+                    if(!strcmp(get_value_type(statement.commands[2]), INTEGER)) {
+                        tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                        tmpValue = tmpValue - get_value_as_integer(statement.commands[2]);
+                        sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                        return;
+                    } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
+                        for(i = 0; i < varsCount; i++) {
+                            if(!strcmp(vars[i].name, statement.commands[2])) {
+                                varsIndex2 = i;
+                            }
+                        }
+                        if(varsIndex2 != -1) {
+                            if(!strcmp(vars[varsIndex2].type, INTEGER)) {
+                                tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                                tmpValue = tmpValue - get_value_as_integer(vars[varsIndex2].value[0]);
+                                sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                                return;
+                            } else if(!strcmp(vars[varsIndex2].type, STRING)){
+                                logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
+                                stopPropagation = TRUE;
+                                return;
+                            }
+                        } else {
+                            logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_NOT_FOUND);
+                            stopPropagation = TRUE;
+                            return;
+                        }
+                    }
+                } else if(!strcmp(vars[varsIndex1].type, STRING)) {
                     logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
                     stopPropagation = TRUE;
                     return;
@@ -540,7 +619,7 @@ void sub_statement(const char* event_type, char* next_statement) {
 void mul_statement(const char* event_type, char* next_statement) {
     if(!stopPropagation) {
         Statement statement;
-        int i, varsIndex = -1;
+        int i, varsIndex1 = -1, varsIndex2 = -1;
         int tmpValue = 0;
 
         statement = tokenizer(line);
@@ -551,16 +630,40 @@ void mul_statement(const char* event_type, char* next_statement) {
         } else {
             for(i = 0; i < varsCount; i++) {
                 if(!strcmp(vars[i].name, statement.commands[1])) {
-                    varsIndex = i;
+                    varsIndex1 = i;
                 }
             }
-            if(varsIndex != -1) {
-                if(!strcmp(vars[varsIndex].type, INTEGER)) {
-                    tmpValue = get_value_as_integer(vars[varsIndex].value);
-                    tmpValue = tmpValue * get_value_as_integer(statement.commands[2]);
-                    sprintf(vars[varsIndex].value, "%d", tmpValue);
-                    return;
-                } else if(!strcmp(vars[varsIndex].type, STRING)) {
+            if(varsIndex1 != -1) {
+                if(!strcmp(vars[varsIndex1].type, INTEGER)) {
+                    if(!strcmp(get_value_type(statement.commands[2]), INTEGER)) {
+                        tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                        tmpValue = tmpValue * get_value_as_integer(statement.commands[2]);
+                        sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                        return;
+                    } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
+                        for(i = 0; i < varsCount; i++) {
+                            if(!strcmp(vars[i].name, statement.commands[2])) {
+                                varsIndex2 = i;
+                            }
+                        }
+                        if(varsIndex2 != -1) {
+                            if(!strcmp(vars[varsIndex2].type, INTEGER)) {
+                                tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                                tmpValue = tmpValue * get_value_as_integer(vars[varsIndex2].value[0]);
+                                sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                                return;
+                            } else if(!strcmp(vars[varsIndex2].type, STRING)){
+                                logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
+                                stopPropagation = TRUE;
+                                return;
+                            }
+                        } else {
+                            logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_NOT_FOUND);
+                            stopPropagation = TRUE;
+                            return;
+                        }
+                    }
+                } else if(!strcmp(vars[varsIndex1].type, STRING)) {
                     logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
                     stopPropagation = TRUE;
                     return;
@@ -577,7 +680,7 @@ void mul_statement(const char* event_type, char* next_statement) {
 void div_statement(const char* event_type, char* next_statement) {
     if(!stopPropagation) {
         Statement statement;
-        int i, varsIndex = -1;
+        int i, varsIndex1 = -1, varsIndex2 = -1;
         int tmpValue = 0;
 
         statement = tokenizer(line);
@@ -588,22 +691,52 @@ void div_statement(const char* event_type, char* next_statement) {
         } else {
             for(i = 0; i < varsCount; i++) {
                 if(!strcmp(vars[i].name, statement.commands[1])) {
-                    varsIndex = i;
+                    varsIndex1 = i;
                 }
             }
-            if(varsIndex != -1) {
-                if(!strcmp(vars[varsIndex].type, INTEGER)) {
-                    tmpValue = get_value_as_integer(vars[varsIndex].value);
-                    if(get_value_as_integer(statement.commands[2]) == 0) {
-                        logger(event_type, statement.commands[0], ERROR_LEVEL, DIV_ZERO);
-                        stopPropagation = TRUE;
-                        return;
-                    } else {
-                        tmpValue = tmpValue / get_value_as_integer(statement.commands[2]);
-                        sprintf(vars[varsIndex].value, "%d", tmpValue);
-                        return;
+            if(varsIndex1 != -1) {
+                if(!strcmp(vars[varsIndex1].type, INTEGER)) {
+                    if(!strcmp(get_value_type(statement.commands[2]), INTEGER)) {
+                        tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                        if(get_value_as_integer(statement.commands[2]) == 0) {
+                            logger(event_type, statement.commands[0], ERROR_LEVEL, DIV_ZERO);
+                            stopPropagation = TRUE;
+                            return;
+                        } else {
+                            tmpValue = tmpValue / get_value_as_integer(statement.commands[2]);
+                            sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                            return;
+                        }
+                    } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
+                        for(i = 0; i < varsCount; i++) {
+                            if(!strcmp(vars[i].name, statement.commands[2])) {
+                                varsIndex2 = i;
+                            }
+                        }
+                        if(varsIndex2 != -1) {
+                            if(!strcmp(vars[varsIndex2].type, INTEGER)) {
+                                tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                                if(get_value_as_integer(vars[varsIndex2].value[0]) == 0) {
+                                    logger(event_type, statement.commands[0], ERROR_LEVEL, DIV_ZERO);
+                                    stopPropagation = TRUE;
+                                    return;
+                                } else {
+                                    tmpValue = tmpValue / get_value_as_integer(vars[varsIndex2].value[0]);
+                                    sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                                    return;
+                                }
+                            } else if(!strcmp(vars[varsIndex2].type, STRING)){
+                                logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
+                                stopPropagation = TRUE;
+                                return;
+                            }
+                        } else {
+                            logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_NOT_FOUND);
+                            stopPropagation = TRUE;
+                            return;
+                        }
                     }
-                } else if(!strcmp(vars[varsIndex].type, STRING)) {
+                } else if(!strcmp(vars[varsIndex1].type, STRING)) {
                     logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
                     stopPropagation = TRUE;
                     return;
@@ -761,7 +894,7 @@ void if_statement(const char* event_type, char* next_statement) {
                 if(varsIndex != -1) {
                     if(!strcmp(get_value_type(statement.commands[3]), vars[varsIndex].type) 
                     && !strcmp(vars[varsIndex].type, INTEGER)) {
-                        tmpValueArg2 = get_value_as_integer(vars[varsIndex].value);
+                        tmpValueArg2 = get_value_as_integer(vars[varsIndex].value[0]);
                         tmpValueArg4 = get_value_as_integer(statement.commands[3]);
 
                         if(!strcmp(statement.commands[2], EQUAL)) {
@@ -826,7 +959,7 @@ void if_statement(const char* event_type, char* next_statement) {
                     } if(!strcmp(get_value_type(statement.commands[3]), vars[varsIndex].type) 
                     && !strcmp(vars[varsIndex].type, STRING)) {
                         if(!strcmp(statement.commands[2], EQUAL)) {
-                            if(!strcmp(statement.commands[3], vars[varsIndex].value)) {
+                            if(!strcmp(statement.commands[3], vars[varsIndex].value[0])) {
                                 event_interpreter(event_type, get_next_statement());
                                 if_statement(IF_TYPE, get_next_statement());
                                 return;
@@ -835,8 +968,8 @@ void if_statement(const char* event_type, char* next_statement) {
                                 return;
                             }
                         } else if(!strcmp(statement.commands[2], NOT_EQUAL)) {
-                            if(strcmp(statement.commands[3], vars[varsIndex].value) > 0 ||
-                            strcmp(statement.commands[3], vars[varsIndex].value) < 0) {
+                            if(strcmp(statement.commands[3], vars[varsIndex].value[0]) > 0 ||
+                            strcmp(statement.commands[3], vars[varsIndex].value[0]) < 0) {
                                 event_interpreter(event_type, get_next_statement());
                                 if_statement(IF_TYPE, get_next_statement());
                                 return;

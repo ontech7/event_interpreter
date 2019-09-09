@@ -11,21 +11,25 @@ declare
         read test
     endfunction
 
+    function calculus
+        mul num 3
+        read num
+
+        div num 2
+        read num
+    endfunction
+
     variable num 10
+    variable zero 0
     variable hello "Hello"
     variable world "World!"
-    variable test "Let's read this var"
+    variable test1 "test1: $hello$"
+    variable test2 "test2: $test1$"
 enddeclare
 
 #call countdown
 
-dialog "$hello$ $world$"
+read test2
 
-set num 2
-dialog $test$
-
-mul num 3
-read num
-
-div num 2
+div num num
 read num

@@ -76,27 +76,32 @@ The variable name can be the same of a function, because they don't comunicate w
 
 Reads the value of a variable.  
 
-`set <name> <value>`  
+`set <name> <value/name>`  
 
 Sets a variable with a value.  
+It's possible to call another variable as 3rd argument (INTEGER type).  
 If the variable exists, the value will be changed.  
 If the variable doesn't exists, it will be created automatically.  
 
-`add <name> <value>`  
+`add <name> <value/name>`  
 
 Adds 'value' to the current value of 'name' variable.  
+It's possible to call another variable as 3rd argument (INTEGER type).  
 
-`sub <name> <value>`  
+`sub <name> <value/name>`  
 
 Subtracts 'value' to the current value of 'name' variable.  
+It's possible to call another variable as 3rd argument (INTEGER type).  
 
-`mul <name> <value>`  
+`mul <name> <value/name>`  
 
 Multiply 'value' to the current value of 'name' variable.  
+It's possible to call another variable as 3rd argument (INTEGER type).  
 
-`div <name> <value>`  
+`div <name> <value/name>`  
 
 Divides 'value' to the current value of 'name' variable.  
+It's possible to call another variable as 3rd argument (INTEGER type).  
 It's not possible to divide by zero.  
 
 `wait <string>`  
