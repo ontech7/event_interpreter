@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "utils/constants.h"
+#include "../include/constants.h"
 
 const int DEBUG_MODE = TRUE;
 

@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "utils/definitions.h"
-#include "utils/constants.h"
-#include "utils/variables.h"
+#include "include/definitions.h"
+#include "include/constants.h"
+#include "include/variables.h"
 
 void event_interpreter(const char* event_type, char* next_statement) {
     if(!stopPropagation) {

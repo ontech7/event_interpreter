@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "utils/definitions.h"
+#include "definitions.h"
 
 #ifndef _VARIABLES_H_
 #define _VARIABLES_H_

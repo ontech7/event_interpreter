@@ -1,5 +1,5 @@
-#include "utils/variables.h"
-#include "utils/constants.h"
+#include "../include/variables.h"
+#include "../include/constants.h"
 
 // Useful variables
 int stopPropagation = FALSE;

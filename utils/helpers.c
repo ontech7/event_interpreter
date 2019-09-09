@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "utils/definitions.h"
-#include "utils/constants.h"
-#include "utils/variables.h"
+#include "../include/definitions.h"
+#include "../include/constants.h"
+#include "../include/variables.h"
 
 StringExtracted string_extractor(char* s, int index, int stringLen) {
     StringExtracted str_ext;
