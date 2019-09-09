@@ -5,7 +5,11 @@ Validator for the Event Interpreter
 
 To compile the artifact, just write this in the terminal:
 
-```gcc -I. *.c -o <output_name>```
+```gcc -I. *.c */*.c -o <output_name>```
+
+To run it, put a .evnt file as 2nd argument. Ex.:  
+
+```./<output_name> examples/test.evnt```
 
 ## Event language statements
 
