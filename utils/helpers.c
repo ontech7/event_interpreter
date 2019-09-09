@@ -226,10 +226,12 @@ void skip_statements_from_beginning(int to) {
 
 void logger(const char* event_type, char* command, const char* logger_level, const char* custom_msg) {
 	if(DEBUG_MODE == TRUE) {
-		if(!strcmp(custom_msg, "")) {
-			printf("%s::%s -> %s\n", event_type, logger_level, command);
-        } else {
-			printf("%s::%s -> %s [msg: \"%s\", line: %i]\n", event_type, logger_level, command, custom_msg, lineCount);
+	    if(get_flag(logger_level) & LOGGER_FLAGS) {
+		    if(!strcmp(custom_msg, "")) {
+			    printf("%s::%s -> %s\n", event_type, logger_level, command);
+            } else {
+			    printf("%s::%s -> %s [msg: \"%s\", line: %i]\n", event_type, logger_level, command, custom_msg, lineCount);
+            }
         }
     }
 }

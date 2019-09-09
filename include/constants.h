@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "flags.h"
 
 #ifndef _CONSTANTS_H_
 #define _CONSTANTS_H_
@@ -7,6 +8,7 @@
 #define FALSE 0
 
 extern const int DEBUG_MODE;
+extern const char LOGGER_FLAGS;
 
 extern const char* EOF_TYPE;
 extern const char* NOT_FOUND;

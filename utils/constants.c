@@ -3,6 +3,7 @@
 #include "../include/constants.h"
 
 const int DEBUG_MODE = TRUE;
+const char LOGGER_FLAGS = (ERROR_FLAG | VALUE_FLAG);
 
 const char* EOF_TYPE = "EOF";
 const char* NOT_FOUND = "NOT_FOUND";
