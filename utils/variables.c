@@ -6,7 +6,7 @@ int stopPropagation = FALSE;
 FILE* eventFile;
 char* next_statement;
 char* line = NULL;
-int strLength = 0;
+size_t strLength = 0;
 int lineCount = 0;
 
 int funcsCount = 0;

@@ -28,8 +28,4 @@ declare
 enddeclare
 
 #call countdown
-
-read test2
-
-div num num
-read num
+call calculus

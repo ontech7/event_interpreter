@@ -8,7 +8,7 @@
 extern int stopPropagation;
 extern FILE* eventFile;
 extern char* line;
-extern int strLength;
+extern size_t strLength;
 extern char* next_statement;
 extern int lineCount;
 
