@@ -564,7 +564,7 @@ void sub_statement(const char* event_type, char* next_statement) {
         statement = tokenizer(line);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
-            add_statement(event_type, get_next_statement());
+            sub_statement(event_type, get_next_statement());
             return;
         } else {
             for(i = 0; i < varsCount; i++) {
@@ -625,7 +625,7 @@ void mul_statement(const char* event_type, char* next_statement) {
         statement = tokenizer(line);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
-            add_statement(event_type, get_next_statement());
+            mul_statement(event_type, get_next_statement());
             return;
         } else {
             for(i = 0; i < varsCount; i++) {
@@ -686,7 +686,7 @@ void div_statement(const char* event_type, char* next_statement) {
         statement = tokenizer(line);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
-            add_statement(event_type, get_next_statement());
+            div_statement(event_type, get_next_statement());
             return;
         } else {
             for(i = 0; i < varsCount; i++) {
