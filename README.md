@@ -116,6 +116,10 @@ Wait a certain amount of time (seconds) before doing the very next action.
 
 Adds an item inside Player's inventory, if the item exists (be careful on what name you put in the statement, otherwise an exception will be thrown).  
 
+`return`  
+
+Terminates the execution of the current subroutine and returns to the caller.  
+
 ## Event language special symbols
 
 `#`  
