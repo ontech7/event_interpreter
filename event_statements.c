@@ -6,7 +6,7 @@
 #include "include/variables.h"
 
 void event_interpreter(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
+    if(!stopPropagation & !returnCall) {
         Statement statement;
         int i;
 
@@ -14,6 +14,9 @@ void event_interpreter(const char* event_type, char* next_statement) {
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             //event_interpreter(event_type, get_next_statement());
+            return;
+        } else if (!strcmp(statement.commands[0], RETURN_TYPE)) { // RETURN_TYPE
+            returnCall = TRUE;
             return;
         } else if (!strcmp(statement.commands[0], DECLARE_TYPE)) { // DECLARE_TYPE
             logger(event_type, statement.commands[0], TYPE_LEVEL, "");
@@ -256,7 +259,7 @@ void event_interpreter(const char* event_type, char* next_statement) {
 }
 
 void declare_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
+    if(!stopPropagation & !returnCall) {
         Statement statement;
         int i, varsIndex = -1, funcsIndex = -1;
 
@@ -339,7 +342,7 @@ void declare_statement(const char* event_type, char* next_statement) {
 }
 
 void call_statement(const char* event_type, char* next_statement, int callLine) {
-    if(!stopPropagation) {
+    if(!stopPropagation & !returnCall) {
         Statement statement;
         int i, funcIndex = -1;
 
@@ -385,6 +388,7 @@ void function_statement(const char* event_type, char* next_statement, int callLi
             return;
         } else if(!strcmp(statement.commands[0], ENDFUNCTION_TYPE)) { //ENDFUNCTION_TYPE
             logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+            returnCall = FALSE;
             return;
         } else {
             event_interpreter(event_type, next_statement);
@@ -395,7 +399,7 @@ void function_statement(const char* event_type, char* next_statement, int callLi
 }
 
 void set_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
+    if(!stopPropagation & !returnCall) {
         Statement statement;
         int i, varsIndex1 = -1, varsIndex2 = -1;
 
@@ -468,7 +472,7 @@ void set_statement(const char* event_type, char* next_statement) {
 }
 
 void read_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
+    if(!stopPropagation & !returnCall) {
         Statement statement;
         int i, varsIndex = -1;
 
@@ -495,7 +499,7 @@ void read_statement(const char* event_type, char* next_statement) {
 }
 
 void add_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
+    if(!stopPropagation & !returnCall) {
         Statement statement;
         int i, varsIndex1 = -1, varsIndex2 = -1;
         int tmpValue = 0;
@@ -556,7 +560,7 @@ void add_statement(const char* event_type, char* next_statement) {
 }
 
 void sub_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
+    if(!stopPropagation & !returnCall) {
         Statement statement;
         int i, varsIndex1 = -1, varsIndex2 = -1;
         int tmpValue = 0;
@@ -564,7 +568,7 @@ void sub_statement(const char* event_type, char* next_statement) {
         statement = tokenizer(line);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
-            add_statement(event_type, get_next_statement());
+            sub_statement(event_type, get_next_statement());
             return;
         } else {
             for(i = 0; i < varsCount; i++) {
@@ -617,7 +621,7 @@ void sub_statement(const char* event_type, char* next_statement) {
 }
 
 void mul_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
+    if(!stopPropagation & !returnCall) {
         Statement statement;
         int i, varsIndex1 = -1, varsIndex2 = -1;
         int tmpValue = 0;
@@ -625,7 +629,7 @@ void mul_statement(const char* event_type, char* next_statement) {
         statement = tokenizer(line);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
-            add_statement(event_type, get_next_statement());
+            mul_statement(event_type, get_next_statement());
             return;
         } else {
             for(i = 0; i < varsCount; i++) {
@@ -678,7 +682,7 @@ void mul_statement(const char* event_type, char* next_statement) {
 }
 
 void div_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
+    if(!stopPropagation & !returnCall) {
         Statement statement;
         int i, varsIndex1 = -1, varsIndex2 = -1;
         int tmpValue = 0;
@@ -751,7 +755,7 @@ void div_statement(const char* event_type, char* next_statement) {
 }
 
 void options_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
+    if(!stopPropagation & !returnCall) {
         Statement statement;
         int i;
 
@@ -792,7 +796,7 @@ void options_statement(const char* event_type, char* next_statement) {
 }
 
 void switch_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
+    if(!stopPropagation & !returnCall) {
         Statement statement;
         int i;
 
@@ -833,7 +837,7 @@ void switch_statement(const char* event_type, char* next_statement) {
 }
 
 void case_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
+    if(!stopPropagation & !returnCall) {
         Statement statement;
         int i;
 
@@ -858,19 +862,19 @@ void case_statement(const char* event_type, char* next_statement) {
 }
 
 void if_statement(const char* event_type, char* next_statement) {
-    if(!stopPropagation) {
+    if(!stopPropagation && !returnCall) {
         Statement statement;
         int i, varsIndex = -1, tmpValueArg2 = 0, tmpValueArg4 = 0;
 
         statement = tokenizer(line);
 
-        if(!strcmp(statement.commands[0], EMPTY_TYPE)) {
+        if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             if_statement(IF_TYPE, get_next_statement());
             return;
-        } else if (!strcmp(statement.commands[0], ENDIF_TYPE)) {
+        } else if (!strcmp(statement.commands[0], ENDIF_TYPE)) { //ENDIF_TYPE
             logger(event_type, statement.commands[0], TYPE_LEVEL, "");
             return;
-        } else if(!strcmp(statement.commands[0], IF_TYPE)) {
+        } else if(!strcmp(statement.commands[0], IF_TYPE)) { //IF_TYPE
             if(statement.size == 2) {
                 for(i = 0; i < varsCount; i++) {
                     if(!strcmp(vars[i].name, statement.commands[1])) {

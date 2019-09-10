@@ -1,9 +1,22 @@
 declare
-    function countdown
-        if num > 5
-            sub num 1
-            call countdown
+    function count
+        if ten > 5
+            sub ten 1
+            read ten
+            call count
+            return
+            dialog "Not reachable num"
         endif
+
+        if zero < 5
+            add zero 1
+            read zero
+            call count
+            return
+            dialog "Not reachable zero"
+        endif
+        
+        dialog "Call this only one time :D"
     endfunction
 
     function otherDialog
@@ -19,7 +32,7 @@ declare
         read num
     endfunction
 
-    variable num 10
+    variable ten 10
     variable zero 0
     variable hello "Hello"
     variable world "World!"
@@ -27,5 +40,5 @@ declare
     variable test2 "test2: $test1$"
 enddeclare
 
-#call countdown
-call calculus
+call count
+read test2

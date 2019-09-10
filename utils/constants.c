@@ -4,6 +4,7 @@
 
 const int DEBUG_MODE = TRUE;
 const char LOGGER_FLAGS = (ERROR_FLAG | VALUE_FLAG);
+int returnCall = FALSE;
 
 const char* EOF_TYPE = "EOF";
 const char* NOT_FOUND = "NOT_FOUND";
@@ -60,6 +61,7 @@ const char* ENDIF_TYPE = "endif";
 const char* ENDSWITCH_TYPE = "endswitch";
 const char* ENDDECLARE_TYPE = "enddeclare";
 const char* ENDFUNCTION_TYPE = "endfunction";
+const char* RETURN_TYPE = "return";
 
 // Logger Levels
 const char* ERROR_LEVEL = "error";
