@@ -4,6 +4,14 @@
 
 Validator for the Event Interpreter
 
+## Contents
+
+- [Compiling guide](#compiling-guide)
+- [Command types](#command-types)
+- [Special symbols](#special-symbols)
+- [Error checks](#error-checks)
+- [Credits](#credits)
+
 ## Compiling guide
 
 To compile the artifact, just write this in the terminal:
@@ -14,7 +22,7 @@ To run it, put a .evnt file as 2nd argument. Ex.:
 
 ```./<output_name> examples/test.evnt```
 
-## Event language statements
+## Command types
 
 | Command | Description | Link
 | :---: | --- | :---: |
@@ -39,7 +47,7 @@ To run it, put a .evnt file as 2nd argument. Ex.:
 | `addItem` | Adds an item inside Player's inventory | See [ADDITEM_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/ADDITEM_TYPE.md) |
 | `return` | Terminates the execution of the current subroutine and returns to the caller. | See [RETURN_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/RETURN_TYPE.md) |
 
-## Event language special symbols
+## Symbols
 
 | Command | Description | Notes |
 | :---: | :---: | :---: |
@@ -73,3 +81,8 @@ There are a bunch of error checks, will add some others:
 | `INTEGER_TYPE_INVALID` | *Type invalid. Variable is declared as 'integer'. Error occurred.* |
 | `DIFFERENT_TYPES` | *The two compared values have different types. Error occurred.* |
 | `WRONG_CLOSURE` | *Wrong closure of the statement. Error occurred.* |
+
+Credits
+----
+
+$ Andrea Losavio (https://github.com/ontech7)
