@@ -17,32 +17,32 @@ To run it, put a .evnt file as 2nd argument. Ex.:
 ## Event language statements
 
 | Command | Description | Link
-| --- | --- | --- |
-| `name` | Sets a name to the object. | . |
-| `dialog` | Sets a dialog to the NPC. | . |
-| `options` | Creates options for branch features. | . |
-| `text` | Sets one option for the 'options' statement. | . |
-| `switch` | Creates a switch branching system. | . |
-| `case` | Creates one case based on the options given. | . |
-| `if` | Creates a condition to be met in order to enter inside it. | . |
-| `declare` | Statement that permits to declare variables and functions inside. | . |
-| `function` | Implements a function that can be reused during the execution by 'call' statement. | . |
-| `call` | Calls an already defined function, and executes it. | . |
-| `variable` | Defines a variable that can be reused and modified during the execution. | . |
-| `read` | Reads the value of a variable. | . |
-| `set` | Sets a variable with a value. | . |
-| `add` | Adds 'value' to the current value of 'name' variable. | . |
-| `sub` | Subtracts 'value' to the current value of 'name' variable. | . |
-| `mul` | Multiply 'value' to the current value of 'name' variable. | . |
-| `div` | Divides 'value' to the current value of 'name' variable. | . |
-| `wait` | Wait some seconds before doing the very next action. | . |
-| `addItem` | Adds an item inside Player's inventory | . |
-| `return` | Terminates the execution of the current subroutine and returns to the caller. | . |
+| :---: | --- | :---: |
+| `name` | Sets a name to the object. | See [NAME_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/NAME_TYPE.md) |
+| `dialog` | Sets a dialog to the NPC. | See [DIALOG_tYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/DIALOG_TYPE.md) |
+| `options` | Creates options for branch features. | See [OPTIONS_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/OPTIONS_TYPE.md) |
+| `text` | Sets one option for the 'options' statement. | See [TEXT_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/TEXT_TYPE.md) |
+| `switch` | Creates a switch branching system. | See [SWITCH_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/SWITCH_TYPE.md) |
+| `case` | Creates one case based on the options given. | See [CASE_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/CASE_TYPE.md) |
+| `if` | Creates a condition to be met in order to enter inside it. | See [IF_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/IF_TYPE.md) |
+| `declare` | Statement that permits to declare variables and functions inside. | See [DECLARE_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/DECLARE_TYPE.md) |
+| `function` | Implements a function that can be reused during the execution by 'call' statement. | See [FUNCTION_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/FUNCTION_TYPE.md) |
+| `call` | Calls an already defined function, and executes it. | See [CALL_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/CALL_TYPE.md) |
+| `variable` | Defines a variable that can be reused and modified during the execution. | See [VARIABLE_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/VARIABLE_TYPE.md) |
+| `read` | Reads the value of a variable. | See [READ_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/READ_TYPE.md) |
+| `set` | Sets a variable with a value. | See [SET_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/SET_TYPE.md) |
+| `add` | Adds 'value' to the current value of 'name' variable. | See [ADD_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/ADD_TYPE.md) |
+| `sub` | Subtracts 'value' to the current value of 'name' variable. | See [SUB_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/SUB_TYPE.md) |
+| `mul` | Multiply 'value' to the current value of 'name' variable. | See [MUL_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/MUL_TYPE.md) |
+| `div` | Divides 'value' to the current value of 'name' variable. | See [DIV_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/DIV_TYPE.md) |
+| `wait` | Wait some seconds before doing the very next action. | See [WAIT_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/WAIT_TYPE.md) |
+| `addItem` | Adds an item inside Player's inventory | See [ADDITEM_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/ADDITEM_TYPE.md) |
+| `return` | Terminates the execution of the current subroutine and returns to the caller. | See [RETURN_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/RETURN_TYPE.md) |
 
 ## Event language special symbols
 
 | Command | Description | Notes |
-| --- | --- | --- |
+| :---: | :---: | :---: |
 | `#` | Symbol used for writing comments. | Everything ahead this symbol will be ignored during the parse. |
 | `"` | Symbol used for making string. | Must be closed with another equal symbol. |
 | `$` | Symbol used for calling variables. | The value will be showed instead of the variable. Must be closed with another equal symbol. | 
