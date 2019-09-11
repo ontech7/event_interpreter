@@ -9,6 +9,7 @@
 
 extern const int DEBUG_MODE;
 extern const char LOGGER_FLAGS;
+extern int returnCall;
 
 extern const char* EOF_TYPE;
 extern const char* NOT_FOUND;
@@ -65,6 +66,7 @@ extern const char* ENDIF_TYPE;
 extern const char* ENDSWITCH_TYPE;
 extern const char* ENDDECLARE_TYPE;
 extern const char* ENDFUNCTION_TYPE;
+extern const char* RETURN_TYPE;
 
 // Logger Levels
 extern const char* ERROR_LEVEL;
