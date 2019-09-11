@@ -1,4 +1,7 @@
 # Event Interpreter Validator
+
+[![Build Status](https://travis-ci.org/ontech7/event_interpreter_validator.svg?branch=develop)](https://travis-ci.org/ontech7/event_interpreter_validator)
+
 Validator for the Event Interpreter
 
 ## Compiling guide
