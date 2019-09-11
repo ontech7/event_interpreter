@@ -11,6 +11,8 @@ extern char* line;
 extern size_t strLength;
 extern char* next_statement;
 extern int lineCount;
+extern int returnCall;
+extern int nestedIfCount;
 
 // Storage
 extern Function funcs[100];

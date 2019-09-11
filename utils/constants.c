@@ -4,7 +4,6 @@
 
 const int DEBUG_MODE = TRUE;
 const char LOGGER_FLAGS = (ERROR_FLAG | VALUE_FLAG);
-int returnCall = FALSE;
 
 const char* EOF_TYPE = "EOF";
 const char* NOT_FOUND = "NOT_FOUND";

@@ -24,12 +24,15 @@ declare
         read test
     endfunction
 
-    function calculus
-        mul num 3
-        read num
-
-        div num 2
-        read num
+    function between
+        if ten < 10
+            if ten > 0
+                if zero = 0
+                    sub ten 1
+                    read ten
+                endif
+            endif
+        endif
     endfunction
 
     variable ten 10
@@ -40,5 +43,7 @@ declare
     variable test2 "test2: $test1$"
 enddeclare
 
-call count
+call between
+sub ten 1
+call between
 read test2

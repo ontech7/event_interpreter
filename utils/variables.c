@@ -8,6 +8,8 @@ char* next_statement;
 char* line = NULL;
 size_t strLength = 0;
 int lineCount = 0;
+int returnCall = FALSE;
+int nestedIfCount = 0;
 
 int funcsCount = 0;
 int varsCount = 0;

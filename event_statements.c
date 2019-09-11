@@ -10,7 +10,7 @@ void event_interpreter(const char* event_type, char* next_statement) {
         Statement statement;
         int i;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             //event_interpreter(event_type, get_next_statement());
@@ -263,7 +263,7 @@ void declare_statement(const char* event_type, char* next_statement) {
         Statement statement;
         int i, varsIndex = -1, funcsIndex = -1;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             declare_statement(event_type, get_next_statement());
@@ -346,7 +346,7 @@ void call_statement(const char* event_type, char* next_statement, int callLine) 
         Statement statement;
         int i, funcIndex = -1;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             call_statement(event_type, get_next_statement(), callLine);
@@ -376,7 +376,7 @@ void function_statement(const char* event_type, char* next_statement, int callLi
         Statement statement;
         int i;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             function_statement(event_type, get_next_statement(), callLine);
@@ -403,7 +403,7 @@ void set_statement(const char* event_type, char* next_statement) {
         Statement statement;
         int i, varsIndex1 = -1, varsIndex2 = -1;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             set_statement(event_type, get_next_statement());
@@ -476,7 +476,7 @@ void read_statement(const char* event_type, char* next_statement) {
         Statement statement;
         int i, varsIndex = -1;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             read_statement(event_type, get_next_statement());
@@ -504,7 +504,7 @@ void add_statement(const char* event_type, char* next_statement) {
         int i, varsIndex1 = -1, varsIndex2 = -1;
         int tmpValue = 0;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             add_statement(event_type, get_next_statement());
@@ -565,7 +565,7 @@ void sub_statement(const char* event_type, char* next_statement) {
         int i, varsIndex1 = -1, varsIndex2 = -1;
         int tmpValue = 0;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             sub_statement(event_type, get_next_statement());
@@ -626,7 +626,7 @@ void mul_statement(const char* event_type, char* next_statement) {
         int i, varsIndex1 = -1, varsIndex2 = -1;
         int tmpValue = 0;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             mul_statement(event_type, get_next_statement());
@@ -687,7 +687,7 @@ void div_statement(const char* event_type, char* next_statement) {
         int i, varsIndex1 = -1, varsIndex2 = -1;
         int tmpValue = 0;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             div_statement(event_type, get_next_statement());
@@ -759,7 +759,7 @@ void options_statement(const char* event_type, char* next_statement) {
         Statement statement;
         int i;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             options_statement(event_type, get_next_statement());
@@ -800,7 +800,7 @@ void switch_statement(const char* event_type, char* next_statement) {
         Statement statement;
         int i;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             switch_statement(event_type, get_next_statement());
@@ -841,7 +841,7 @@ void case_statement(const char* event_type, char* next_statement) {
         Statement statement;
         int i;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             case_statement(CASE_TYPE, get_next_statement());
@@ -866,7 +866,7 @@ void if_statement(const char* event_type, char* next_statement) {
         Statement statement;
         int i, varsIndex = -1, tmpValueArg2 = 0, tmpValueArg4 = 0;
 
-        statement = tokenizer(line);
+        statement = tokenizer(next_statement);
 
         if(!strcmp(statement.commands[0], EMPTY_TYPE)) { //EMPTY_TYPE
             if_statement(IF_TYPE, get_next_statement());
@@ -886,7 +886,7 @@ void if_statement(const char* event_type, char* next_statement) {
                     if_statement(IF_TYPE, get_next_statement());
                     return;
                 } else {
-                    if_skip_statement(event_type, next_statement);
+                    if_skip_statement(event_type, get_next_statement());
                     return;
                 }
             } else if (statement.size == 4) {
@@ -907,7 +907,7 @@ void if_statement(const char* event_type, char* next_statement) {
                                 if_statement(IF_TYPE, get_next_statement());
                                 return;
                             } else {
-                                if_skip_statement(event_type, next_statement);
+                                if_skip_statement(event_type, get_next_statement());
                                 return;
                             }
                         } else if(!strcmp(statement.commands[2], NOT_EQUAL)) {
@@ -916,7 +916,7 @@ void if_statement(const char* event_type, char* next_statement) {
                                 if_statement(IF_TYPE, get_next_statement());
                                 return;
                             } else {
-                                if_skip_statement(event_type, next_statement);
+                                if_skip_statement(event_type, get_next_statement());
                                 return;
                             }
                         } else if(!strcmp(statement.commands[2], EQUAL_GREATER)) {
@@ -925,7 +925,7 @@ void if_statement(const char* event_type, char* next_statement) {
                                 if_statement(IF_TYPE, get_next_statement());
                                 return;
                             } else {
-                                if_skip_statement(event_type, next_statement);
+                                if_skip_statement(event_type, get_next_statement());
                                 return;
                             }
                         } else if(!strcmp(statement.commands[2], EQUAL_LESS)) {
@@ -934,7 +934,7 @@ void if_statement(const char* event_type, char* next_statement) {
                                 if_statement(IF_TYPE, get_next_statement());
                                 return;
                             } else {
-                                if_skip_statement(event_type, next_statement);
+                                if_skip_statement(event_type, get_next_statement());
                                 return;
                             }
                         } else if(!strcmp(statement.commands[2], LESS)) {
@@ -943,7 +943,7 @@ void if_statement(const char* event_type, char* next_statement) {
                                 if_statement(IF_TYPE, get_next_statement());
                                 return;
                             } else {
-                                if_skip_statement(event_type, next_statement);
+                                if_skip_statement(event_type, get_next_statement());
                                 return;
                             }
                         } else if(!strcmp(statement.commands[2], GREATER)) {
@@ -952,7 +952,7 @@ void if_statement(const char* event_type, char* next_statement) {
                                 if_statement(IF_TYPE, get_next_statement());
                                 return;
                             } else {
-                                if_skip_statement(event_type, next_statement);
+                                if_skip_statement(event_type, get_next_statement());
                                 return;
                             }
                         } else {
@@ -968,7 +968,7 @@ void if_statement(const char* event_type, char* next_statement) {
                                 if_statement(IF_TYPE, get_next_statement());
                                 return;
                             } else {
-                                if_skip_statement(event_type, next_statement);
+                                if_skip_statement(event_type, get_next_statement());
                                 return;
                             }
                         } else if(!strcmp(statement.commands[2], NOT_EQUAL)) {
@@ -978,7 +978,7 @@ void if_statement(const char* event_type, char* next_statement) {
                                 if_statement(IF_TYPE, get_next_statement());
                                 return;
                             } else {
-                                if_skip_statement(event_type, next_statement);
+                                if_skip_statement(event_type, get_next_statement());
                                 return;
                             }
                         } else {

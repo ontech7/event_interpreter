@@ -9,7 +9,6 @@
 
 extern const int DEBUG_MODE;
 extern const char LOGGER_FLAGS;
-extern int returnCall;
 
 extern const char* EOF_TYPE;
 extern const char* NOT_FOUND;
