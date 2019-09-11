@@ -41,6 +41,8 @@ declare
     variable world "World!"
     variable test1 "test1: $hello$"
     variable test2 "test2: $test1$"
+    variable test3 "jkjk $const1$"
+    constant CONST1 2
 enddeclare
 
 call between

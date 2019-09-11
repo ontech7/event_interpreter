@@ -27,6 +27,7 @@ extern const char* WAIT_TYPE;
 extern const char* DECLARE_TYPE;
 extern const char* FUNCTION_TYPE;
 extern const char* VARIABLE_TYPE;
+extern const char* CONSTANT_TYPE;
 extern const char* READ_TYPE;
 extern const char* SET_TYPE;
 extern const char* CALL_TYPE;
@@ -95,5 +96,6 @@ extern const char* STRING_TYPE_INVALID;
 extern const char* DIFFERENT_TYPES;
 extern const char* WRONG_CLOSURE;
 extern const char* DIV_ZERO;
+extern const char* VAR_CONSTANT;
 
 #endif

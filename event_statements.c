@@ -322,6 +322,42 @@ void declare_statement(const char* event_type, char* next_statement) {
                     vars[varsCount].value[0] = statement.commands[2];
                     vars[varsCount].size = 1;
                     vars[varsCount].type = get_value_type(statement.commands[2]);
+                    vars[varsCount].isConstant = FALSE;
+                    varsCount++;
+                    declare_statement(event_type, get_next_statement());
+                } else {
+                    logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_ALREADY_EXISTS);
+                    stopPropagation = TRUE;
+                }
+                return;
+            }
+        } else if (!strcmp(statement.commands[0], CONSTANT_TYPE)) { //CONSTANT_TYPE
+            if(statement.size < 3) {
+                logger(event_type, statement.commands[0], ERROR_LEVEL, COMMANDS_LENGTH_3);
+                stopPropagation = TRUE;
+                return;
+            } else if (statement.commands[1] == NULL || !strcmp(statement.commands[1], "")){
+                logger(event_type, statement.commands[0], ERROR_LEVEL, SECOND_ARGUMENT_EMPTY);
+                stopPropagation = TRUE;
+                return;
+            } else if (statement.commands[2] == NULL || !strcmp(statement.commands[2], "")){
+                logger(event_type, statement.commands[0], ERROR_LEVEL, THIRD_ARGUMENT_EMPTY);
+                stopPropagation = TRUE;
+                return;
+            } else {
+                logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+                for(i = 0; i < varsCount; i++) {
+                    if(!strcmp(vars[i].name, statement.commands[1])) {
+                        varsIndex = i;
+                    }
+                }
+                if(varsIndex == -1) {
+                    vars[varsCount].name = statement.commands[1];
+                    vars[varsCount].value = (char**)calloc(1, sizeof(char*));
+                    vars[varsCount].value[0] = statement.commands[2];
+                    vars[varsCount].size = 1;
+                    vars[varsCount].type = get_value_type(statement.commands[2]);
+                    vars[varsCount].isConstant = TRUE;
                     varsCount++;
                     declare_statement(event_type, get_next_statement());
                 } else {
@@ -416,10 +452,16 @@ void set_statement(const char* event_type, char* next_statement) {
             }
             if(varsIndex1 != -1) {
                 if(!strcmp(get_value_type(statement.commands[2]), INTEGER)) {
-                    vars[varsIndex1].name = statement.commands[1];
-                    vars[varsIndex1].value[0] = statement.commands[2];
-                    vars[varsIndex1].type = get_value_type(statement.commands[2]);
-                    return;
+                    if(vars[varsIndex1].isConstant == FALSE) {
+                        vars[varsIndex1].name = statement.commands[1];
+                        vars[varsIndex1].value[0] = statement.commands[2];
+                        vars[varsIndex1].type = get_value_type(statement.commands[2]);
+                        return;
+                    } else {
+                        logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_CONSTANT);
+                        stopPropagation = TRUE;
+                        return;
+                    }
                 } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
                     for(i = 0; i < varsCount; i++) {
                         if(!strcmp(vars[i].name, statement.commands[2])) {
@@ -427,10 +469,16 @@ void set_statement(const char* event_type, char* next_statement) {
                         }
                     }
                     if(varsIndex2 != -1) {
-                        vars[varsIndex1].name = statement.commands[1];
-                        vars[varsIndex1].value[0] = vars[varsIndex2].value[0];
-                        vars[varsIndex1].type = get_value_type(vars[varsIndex2].value[0]);
-                        return;
+                        if(vars[varsIndex1].isConstant == FALSE) {
+                            vars[varsIndex1].name = statement.commands[1];
+                            vars[varsIndex1].value[0] = vars[varsIndex2].value[0];
+                            vars[varsIndex1].type = get_value_type(vars[varsIndex2].value[0]);
+                            return;
+                        } else {
+                            logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_CONSTANT);
+                            stopPropagation = TRUE;
+                            return;
+                        }
                     } else {
                         logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_NOT_FOUND);
                         stopPropagation = TRUE;
@@ -518,10 +566,16 @@ void add_statement(const char* event_type, char* next_statement) {
             if(varsIndex1 != -1) {
                 if(!strcmp(vars[varsIndex1].type, INTEGER)) {
                     if(!strcmp(get_value_type(statement.commands[2]), INTEGER)) {
-                        tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
-                        tmpValue = tmpValue + get_value_as_integer(statement.commands[2]);
-                        sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
-                        return;
+                        if(vars[varsIndex1].isConstant == FALSE) {
+                            tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                            tmpValue = tmpValue + get_value_as_integer(statement.commands[2]);
+                            sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                            return;
+                        } else {
+                            logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_CONSTANT);
+                            stopPropagation = TRUE;
+                            return;
+                        }
                     } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
                         for(i = 0; i < varsCount; i++) {
                             if(!strcmp(vars[i].name, statement.commands[2])) {
@@ -530,10 +584,16 @@ void add_statement(const char* event_type, char* next_statement) {
                         }
                         if(varsIndex2 != -1) {
                             if(!strcmp(vars[varsIndex2].type, INTEGER)) {
-                                tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
-                                tmpValue = tmpValue + get_value_as_integer(vars[varsIndex2].value[0]);
-                                sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
-                                return;
+                                if(vars[varsIndex1].isConstant == FALSE) {
+                                    tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                                    tmpValue = tmpValue + get_value_as_integer(vars[varsIndex2].value[0]);
+                                    sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                                    return;
+                                } else {
+                                    logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_CONSTANT);
+                                    stopPropagation = TRUE;
+                                    return;
+                                }
                             } else if(!strcmp(vars[varsIndex2].type, STRING)){
                                 logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
                                 stopPropagation = TRUE;
@@ -579,10 +639,16 @@ void sub_statement(const char* event_type, char* next_statement) {
             if(varsIndex1 != -1) {
                 if(!strcmp(vars[varsIndex1].type, INTEGER)) {
                     if(!strcmp(get_value_type(statement.commands[2]), INTEGER)) {
-                        tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
-                        tmpValue = tmpValue - get_value_as_integer(statement.commands[2]);
-                        sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
-                        return;
+                        if(vars[varsIndex1].isConstant == FALSE) {
+                            tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                            tmpValue = tmpValue - get_value_as_integer(statement.commands[2]);
+                            sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                            return;
+                        } else {
+                            logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_CONSTANT);
+                            stopPropagation = TRUE;
+                            return;
+                        }
                     } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
                         for(i = 0; i < varsCount; i++) {
                             if(!strcmp(vars[i].name, statement.commands[2])) {
@@ -591,10 +657,16 @@ void sub_statement(const char* event_type, char* next_statement) {
                         }
                         if(varsIndex2 != -1) {
                             if(!strcmp(vars[varsIndex2].type, INTEGER)) {
-                                tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
-                                tmpValue = tmpValue - get_value_as_integer(vars[varsIndex2].value[0]);
-                                sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
-                                return;
+                                if(vars[varsIndex1].isConstant == FALSE) {
+                                    tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                                    tmpValue = tmpValue - get_value_as_integer(vars[varsIndex2].value[0]);
+                                    sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                                    return;
+                                } else {
+                                    logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_CONSTANT);
+                                    stopPropagation = TRUE;
+                                    return;
+                                }
                             } else if(!strcmp(vars[varsIndex2].type, STRING)){
                                 logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
                                 stopPropagation = TRUE;
@@ -640,10 +712,16 @@ void mul_statement(const char* event_type, char* next_statement) {
             if(varsIndex1 != -1) {
                 if(!strcmp(vars[varsIndex1].type, INTEGER)) {
                     if(!strcmp(get_value_type(statement.commands[2]), INTEGER)) {
-                        tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
-                        tmpValue = tmpValue * get_value_as_integer(statement.commands[2]);
-                        sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
-                        return;
+                        if(vars[varsIndex1].isConstant == FALSE) {
+                            tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                            tmpValue = tmpValue * get_value_as_integer(statement.commands[2]);
+                            sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                            return;
+                        } else {
+                            logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_CONSTANT);
+                            stopPropagation = TRUE;
+                            return;
+                        }
                     } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
                         for(i = 0; i < varsCount; i++) {
                             if(!strcmp(vars[i].name, statement.commands[2])) {
@@ -652,10 +730,16 @@ void mul_statement(const char* event_type, char* next_statement) {
                         }
                         if(varsIndex2 != -1) {
                             if(!strcmp(vars[varsIndex2].type, INTEGER)) {
-                                tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
-                                tmpValue = tmpValue * get_value_as_integer(vars[varsIndex2].value[0]);
-                                sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
-                                return;
+                                if(vars[varsIndex1].isConstant == FALSE) {
+                                    tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                                    tmpValue = tmpValue * get_value_as_integer(vars[varsIndex2].value[0]);
+                                    sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                                    return;
+                                } else {
+                                    logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_CONSTANT);
+                                    stopPropagation = TRUE;
+                                    return;
+                                }
                             } else if(!strcmp(vars[varsIndex2].type, STRING)){
                                 logger(event_type, statement.commands[0], ERROR_LEVEL, STRING_TYPE_INVALID);
                                 stopPropagation = TRUE;
@@ -701,14 +785,20 @@ void div_statement(const char* event_type, char* next_statement) {
             if(varsIndex1 != -1) {
                 if(!strcmp(vars[varsIndex1].type, INTEGER)) {
                     if(!strcmp(get_value_type(statement.commands[2]), INTEGER)) {
-                        tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
-                        if(get_value_as_integer(statement.commands[2]) == 0) {
-                            logger(event_type, statement.commands[0], ERROR_LEVEL, DIV_ZERO);
-                            stopPropagation = TRUE;
-                            return;
+                        if(vars[varsIndex1].isConstant == FALSE) {
+                            tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                            if(get_value_as_integer(statement.commands[2]) == 0) {
+                                logger(event_type, statement.commands[0], ERROR_LEVEL, DIV_ZERO);
+                                stopPropagation = TRUE;
+                                return;
+                            } else {
+                                tmpValue = tmpValue / get_value_as_integer(statement.commands[2]);
+                                sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                                return;
+                            }
                         } else {
-                            tmpValue = tmpValue / get_value_as_integer(statement.commands[2]);
-                            sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                            logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_CONSTANT);
+                            stopPropagation = TRUE;
                             return;
                         }
                     } else if(!strcmp(get_value_type(statement.commands[2]), STRING)) {
@@ -719,14 +809,20 @@ void div_statement(const char* event_type, char* next_statement) {
                         }
                         if(varsIndex2 != -1) {
                             if(!strcmp(vars[varsIndex2].type, INTEGER)) {
-                                tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
-                                if(get_value_as_integer(vars[varsIndex2].value[0]) == 0) {
-                                    logger(event_type, statement.commands[0], ERROR_LEVEL, DIV_ZERO);
-                                    stopPropagation = TRUE;
-                                    return;
+                                if(vars[varsIndex1].isConstant == FALSE) {
+                                    tmpValue = get_value_as_integer(vars[varsIndex1].value[0]);
+                                    if(get_value_as_integer(vars[varsIndex2].value[0]) == 0) {
+                                        logger(event_type, statement.commands[0], ERROR_LEVEL, DIV_ZERO);
+                                        stopPropagation = TRUE;
+                                        return;
+                                    } else {
+                                        tmpValue = tmpValue / get_value_as_integer(vars[varsIndex2].value[0]);
+                                        sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                                        return;
+                                    }
                                 } else {
-                                    tmpValue = tmpValue / get_value_as_integer(vars[varsIndex2].value[0]);
-                                    sprintf(vars[varsIndex1].value[0], "%d", tmpValue);
+                                    logger(event_type, statement.commands[0], ERROR_LEVEL, VAR_CONSTANT);
+                                    stopPropagation = TRUE;
                                     return;
                                 }
                             } else if(!strcmp(vars[varsIndex2].type, STRING)){

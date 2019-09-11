@@ -37,6 +37,7 @@ To run it, put a .evnt file as 2nd argument. Ex.:
 | `function` | Implements a function that can be reused during the execution by 'call' statement. | See [FUNCTION_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/FUNCTION_TYPE.md) |
 | `call` | Calls an already defined function, and executes it. | See [CALL_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/CALL_TYPE.md) |
 | `variable` | Defines a variable that can be reused and modified during the execution. | See [VARIABLE_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/VARIABLE_TYPE.md) |
+| `constant` | Defines a constant that can be reused during the execution. | See [CONSTANT_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/CONSTANT_TYPE.md) |
 | `read` | Reads the value of a variable. | See [READ_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/READ_TYPE.md) |
 | `set` | Sets a variable with a value. | See [SET_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/SET_TYPE.md) |
 | `add` | Adds 'value' to the current value of 'name' variable. | See [ADD_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/ADD_TYPE.md) |

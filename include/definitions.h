@@ -22,6 +22,7 @@ typedef struct {
     char** value;
     char* type;
     int size;
+    int isConstant;
 } Variable;
 
 //helpers.c
