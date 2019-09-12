@@ -1,8 +1,8 @@
-# Event Interpreter Validator
+# Event Interpreter
 
 [![Build Status](https://travis-ci.org/ontech7/event_interpreter_validator.svg?branch=develop)](https://travis-ci.org/ontech7/event_interpreter_validator)
 
-Validator for the Event Interpreter
+Event Interpreter for game engines
 
 ## Contents
 
