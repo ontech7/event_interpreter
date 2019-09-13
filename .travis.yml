@@ -6,4 +6,4 @@ language: c
 branches:
   - develop
 script:
-  - gcc -I. *.c */*.c
+  - sh build_release.sh event_interpreter.out
