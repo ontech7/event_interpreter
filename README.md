@@ -1,6 +1,6 @@
 # Event Interpreter
 
-[![Build Status](https://travis-ci.org/ontech7/event_interpreter_validator.svg?branch=develop)](https://travis-ci.org/ontech7/event_interpreter_validator)
+[![Build Status](https://travis-ci.org/ontech7/event_interpreter.svg?branch=develop)](https://travis-ci.org/ontech7/event_interpreter)
 
 Event Interpreter for game engines
 
