@@ -14,9 +14,17 @@ Event Interpreter for game engines
 
 ## Compiling guide
 
-To compile the artifact, just write this in the terminal:
+To compile the artifact in RELEASE mode:
 
-```gcc -I. *.c */*.c -o <output_name>```
+```sh build_release.sh <output_name> <evnt_file>```
+
+To compile the artifact in DEBUG mode (enables debugging with lldb/gdb or equivalent):
+
+```sh build_release.sh <output_name> <evnt_file>```
+
+To debug the artifact (modify the .sh file if you want to use different debuggers):
+
+```sh start_debug.sh <output_name>```
 
 To run it, put a .evnt file as 2nd argument. Ex.:  
 
