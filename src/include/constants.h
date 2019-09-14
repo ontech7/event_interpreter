@@ -22,6 +22,7 @@ extern const char* TEXT_TYPE;
 extern const char* SWITCH_TYPE;
 extern const char* CASE_TYPE;
 extern const char* IF_TYPE;
+extern const char* ELSE_TYPE;
 extern const char* ADDITEM_TYPE;
 extern const char* WAIT_TYPE;
 extern const char* DECLARE_TYPE;

@@ -17,6 +17,7 @@ const char* TEXT_TYPE = "text";
 const char* SWITCH_TYPE = "switch";
 const char* CASE_TYPE = "case";
 const char* IF_TYPE = "if";
+const char* ELSE_TYPE = "else";
 const char* ADDITEM_TYPE = "addItem";
 const char* WAIT_TYPE = "wait";
 const char* DECLARE_TYPE = "declare";

@@ -35,6 +35,20 @@ declare
         endif
     endfunction
 
+    function ifelse
+        if ten
+            dialog "ten"
+            if zero
+                dialog "zero"
+                if hello
+                    dialog $hello$
+                endif
+                dialog "not zero"
+            endif
+            dialog "not ten"
+        endif
+    endfunction
+
     variable ten 10
     variable zero 0
     variable hello "Hello"
@@ -45,7 +59,4 @@ declare
     constant CONST1 2
 enddeclare
 
-call between
-sub ten 1
-call between
-read test2
+call ifelse

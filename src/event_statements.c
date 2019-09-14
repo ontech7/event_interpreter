@@ -968,9 +968,16 @@ void if_statement(const char* event_type, char* next_statement) {
             if_statement(IF_TYPE, get_next_statement());
             return;
         } else if (!strcmp(statement.commands[0], ENDIF_TYPE)) { //ENDIF_TYPE
-            logger(event_type, statement.commands[0], TYPE_LEVEL, "");
-            return;
+            nestedIfCount--;
+            if(nestedIfCount > 0) {
+                if_statement(event_type, get_next_statement());
+                return;
+            } else {
+                logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+                return;
+            }
         } else if(!strcmp(statement.commands[0], IF_TYPE)) { //IF_TYPE
+            nestedIfCount++;
             if(statement.size == 2) {
                 for(i = 0; i < varsCount; i++) {
                     if(!strcmp(vars[i].name, statement.commands[1])) {
@@ -978,7 +985,7 @@ void if_statement(const char* event_type, char* next_statement) {
                     }
                 }
                 if(varsIndex != -1) {
-                    event_interpreter(event_type, get_next_statement());
+                    //event_interpreter(event_type, get_next_statement());
                     if_statement(IF_TYPE, get_next_statement());
                     return;
                 } else {
