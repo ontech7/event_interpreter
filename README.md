@@ -16,15 +16,15 @@ Event Interpreter for game engines
 
 To compile the artifact in RELEASE mode:
 
-```sh build_release.sh <output_name> <evnt_file>```
+```sh build_release.sh <output_name>```
 
 To compile the artifact in DEBUG mode (enables debugging with lldb/gdb or equivalent):
 
-```sh build_release.sh <output_name> <evnt_file>```
+```sh build_release.sh <output_name>```
 
 To debug the artifact (modify the .sh file if you want to use different debuggers):
 
-```sh start_debug.sh <output_name>```
+```sh start_debug.sh <output_name> <evnt_file>```
 
 To run it, put a .evnt file as 2nd argument. Ex.:  
 
@@ -35,7 +35,7 @@ To run it, put a .evnt file as 2nd argument. Ex.:
 | Command | Description | Link
 | :---: | --- | :---: |
 | `name` | Sets a name to the object. | See [NAME_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/NAME_TYPE.md) |
-| `dialog` | Sets a dialog to the NPC. | See [DIALOG_tYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/DIALOG_TYPE.md) |
+| `dialog` | Sets a dialog to the NPC. | See [DIALOG_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/DIALOG_TYPE.md) |
 | `options` | Creates options for branch features. | See [OPTIONS_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/OPTIONS_TYPE.md) |
 | `text` | Sets one option for the 'options' statement. | See [TEXT_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/TEXT_TYPE.md) |
 | `switch` | Creates a switch branching system. | See [SWITCH_TYPE](https://github.com/ontech7/event_interpreter_validator/blob/develop/docs/types/SWITCH_TYPE.md) |
