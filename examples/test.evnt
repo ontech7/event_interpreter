@@ -47,6 +47,7 @@ declare
             endif
             dialog "not ten"
         endif
+        dialog "out"
     endfunction
 
     variable ten 10

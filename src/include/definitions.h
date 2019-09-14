@@ -57,6 +57,6 @@ void function_statement(const char*, char*, int);
 
 //skip_statements.c
 void function_skip_statement(const char*, char*);
-void if_skip_statement(const char*, char*);
+void if_skip_statement(const char*, char*, int);
 
 #endif
