@@ -4,6 +4,10 @@
 
 Event Interpreter for game engines
 
+--------
+
+Lexer algorithm: [DFA](https://en.wikipedia.org/wiki/Deterministic_finite_automaton)
+
 ## Contents
 
 - [Compiling guide](#compiling-guide)
