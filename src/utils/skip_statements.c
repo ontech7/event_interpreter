@@ -44,6 +44,14 @@ void if_skip_statement(const char* event_type, char* next_statement, int nestedI
             nestedIfCount++;
             if_skip_statement(event_type, get_next_statement(), nestedIfNum);
             return;
+        } else if (!strcmp(statement.commands[0], ELSE_TYPE)) {
+            if(nestedIfCount > nestedIfNum+1) {
+                if_skip_statement(event_type, get_next_statement(), nestedIfNum);
+                return;
+            } else {
+                logger(event_type, statement.commands[0], TYPE_LEVEL, "");
+                return;
+            }
         } else if (!strcmp(statement.commands[0], ENDIF_TYPE)) { //ENDIF_TYPE
             nestedIfCount--;
             if(nestedIfCount == 0) {

@@ -977,6 +977,10 @@ void if_statement(const char* event_type, char* next_statement) {
                 logger(event_type, statement.commands[0], TYPE_LEVEL, "");
                 return;
             }
+        } else if (!strcmp(statement.commands[0], ELSE_TYPE)) {
+            if_skip_statement(event_type, get_next_statement(), nestedIfCount-1);
+            if_statement(IF_TYPE, get_next_statement());
+            return;
         } else if(!strcmp(statement.commands[0], IF_TYPE)) { //IF_TYPE
             nestedIfCount++;
             if(statement.size == 2) {
