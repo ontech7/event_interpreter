@@ -94,3 +94,4 @@ const char* DIFFERENT_TYPES = "The two compared values have different types. Err
 const char* WRONG_CLOSURE = "Wrong closure of the statement. Error occurred.";
 const char* DIV_ZERO = "Can't divide by zero. Error occurred.";
 const char* VAR_CONSTANT = "Can't modify the value of a constant. Error occurred.";
+const char* NOT_VARIABLE = "The second argument is not a variable. Error occurred.";

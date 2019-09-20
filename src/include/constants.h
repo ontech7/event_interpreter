@@ -99,5 +99,6 @@ extern const char* DIFFERENT_TYPES;
 extern const char* WRONG_CLOSURE;
 extern const char* DIV_ZERO;
 extern const char* VAR_CONSTANT;
+extern const char* NOT_VARIABLE;
 
 #endif
