@@ -24,7 +24,7 @@ To compile the artifact in RELEASE mode:
 
 To compile the artifact in DEBUG mode (enables debugging with lldb/gdb or equivalent):
 
-```sh build_release.sh <output_name>```
+```sh build_debug.sh <output_name>```
 
 To debug the artifact (modify the .sh file if you want to use different debuggers):
 
