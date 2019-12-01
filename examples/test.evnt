@@ -1,79 +1,35 @@
 declare
-    function count
-        if ten > 5
-            sub ten 1
-            read ten
-            call count
+    function additional
+        set t modulet
+        set tmp_modulet modulet
+        call additional_loop_subroutine
+        set modulef tmp_modulet
+    endfunction
+
+    function additional_loop_subroutine
+        if t > 6
+            div t 3
+            sub t 2
+            add tmp_modulet t
+            call additional_loop_subroutine
             return
-            dialog "Not reachable num"
-        endif
-
-        if zero < 5
-            add zero 1
-            read zero
-            call count
-            return
-            dialog "Not reachable zero"
-        endif
-        
-        dialog "Call this only one time :D"
-    endfunction
-
-    function otherDialog
-        dialog "Test test test"
-        read test
-    endfunction
-
-    function between
-        if ten < 10
-            if ten > 0
-                if zero = 0
-                    sub ten 1
-                    read ten
-                endif
-            endif
         endif
     endfunction
 
-    function ifelse
-        if ten
-            dialog "ten"
-            if zero0
-                dialog "zero"
-            else
-                if hello
-                    dialog $hello$
-                    if world0
-                        dialog $world$
-                    else
-                        dialog "not $world$"
-                    endif
-                endif
-                dialog "not zero"
-            endif
-        else
-            dialog "not ten"
-        endif
-    endfunction
-
-    variable ten 10
-    variable zero 0
-    variable hello "Hello"
-    variable world "World!"
-    variable test1 "test1: $hello$"
-    variable test2 "test2: $test1$"
-    variable test3 "jkjk $const1$"
-    constant CONST1 2
+    variable mass 53075
+    variable fuel 0
+    variable modulet 0
+    variable tmp_modulet 0
+    variable modulef 0
+    variable t 0
 enddeclare
 
-call ifelse
+set modulet mass
+div modulet 3
+sub modulet 2
+call additional
+add fuel modulef
 
-#dialog "ten"
-#if zero
-#    dialog "zero"
-#    if hello
-#        dialog $hello$
-#    endif
-#    dialog "not zero"
-#endif
-#dialog "not ten"
+dialog "Mass: $mass$"
+dialog "Fuel: $modulet$ ($modulef$)"
+dialog "Total: $fuel$"

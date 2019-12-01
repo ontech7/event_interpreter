@@ -54,6 +54,7 @@ const char* LESS = "<";
 // Value types
 const char* STRING = "string";
 const char* INTEGER = "integer";
+const char* VAR_CONST = "var_const";
 const char* ARRAY = "array";
 
 // Closure types

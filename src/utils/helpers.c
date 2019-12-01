@@ -189,8 +189,10 @@ char* strip(char* s, char delimiter, int stringLen) {
 char* get_value_type(char* value) {
     if(value[0] >= '0' && value[0] <= '9') {
         return (char*)INTEGER;
-    } else {
+    } else if(value[0] == '"') {
         return (char*)STRING;
+    } else if(value[0] >= 'a' && value[0] <= 'z' || value[0] >= 'A' && value[0] <= 'Z') {
+        return (char*)VAR_CONST;
     }
 }
 

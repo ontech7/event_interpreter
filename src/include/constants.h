@@ -59,6 +59,7 @@ extern const char* LESS;
 // Value types
 extern const char* STRING;
 extern const char* INTEGER;
+extern const char* VAR_CONST;
 extern const char* ARRAY;
 
 // Closure types
